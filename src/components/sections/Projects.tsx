@@ -86,11 +86,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <p className="text-[var(--text-secondary)] text-sm leading-relaxed line-clamp-2 mb-4">
           {project.description}
         </p>
-        <p className="text-[var(--text-secondary)] text-sm leading-relaxed line-clamp-2 mb-4">
-          {project.technologies}
-        </p>
-        
-
+      
         {/* Tags */}
         {project.technologies?.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
