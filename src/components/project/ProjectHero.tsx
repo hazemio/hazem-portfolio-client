@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   FiArrowLeft,
   FiExternalLink,
@@ -16,18 +16,34 @@ interface ProjectHeroProps {
   project: Project;
 }
 
-export function extractYoutubeId(url?: string): string | null {
-  if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
+/**
+ * Converts all supported YouTube links into an embeddable URL.
+ * Supports:
+ * - https://youtu.be/VIDEO_ID
+ * - https://youtube.com/watch?v=VIDEO_ID
+ * - https://www.youtube.com/watch?v=VIDEO_ID
+ * - https://youtube.com/embed/VIDEO_ID
+ */
+export function getEmbeddableYoutubeUrl(url?: string): string | null {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = trimmed.match(regExp);
+
+  if (match && match[1]) {
+    return `https://www.youtube.com/embed/${match[1]}?autoplay=0&rel=0`;
+  }
+
+  return null;
 }
 
 export const ProjectHero: React.FC<ProjectHeroProps> = ({ project }) => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  const youtubeId = extractYoutubeId(project.youtubeUrl);
+  const embedUrl = getEmbeddableYoutubeUrl(project.youtubeUrl);
   const demoUrl = project.demoUrl || project.liveUrl;
 
   const handleShare = () => {
@@ -155,26 +171,26 @@ export const ProjectHero: React.FC<ProjectHeroProps> = ({ project }) => {
           </motion.div>
         </div>
 
-        {/* Media Frame (YouTube Embed OR Hero Image) */}
+        {/* Media Frame (Responsive 16:9 YouTube Embed OR Project Image) */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden glass-light border border-[var(--border)] shadow-brand-lg group"
+          className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden glass-light border border-[var(--border)] shadow-brand-lg"
         >
-          {youtubeId ? (
+          {embedUrl ? (
             <div className="relative aspect-video w-full bg-black/90">
               <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0`}
+                src={embedUrl}
                 title={`${project.title} Video Preview`}
                 className="absolute inset-0 w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 loading="lazy"
               />
             </div>
           ) : project.imageUrl ? (
-            <div className="relative overflow-hidden aspect-video w-full bg-[var(--bg-overlay)]">
+            <div className="relative overflow-hidden aspect-video w-full bg-[var(--bg-overlay)] group">
               <img
                 src={project.imageUrl}
                 alt={project.title}

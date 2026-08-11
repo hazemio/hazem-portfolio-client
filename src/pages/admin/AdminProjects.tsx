@@ -2,9 +2,9 @@ import { useApi } from '../../hooks';
 import { projectsApi } from '../../api';
 import { Project } from '../../types';
 import CrudTable from '../../components/admin/CrudTable';
-import { FiStar, FiExternalLink, FiGithub } from 'react-icons/fi';
+import { FiStar, FiExternalLink, FiGithub, FiYoutube } from 'react-icons/fi';
 
-// 🔥 normalize helper (مهم جدًا)
+// Normalize helper
 const normalizeTech = (t: any): string[] => {
   if (!t) return [];
   if (Array.isArray(t)) return t;
@@ -19,11 +19,9 @@ const FIELDS = [
   { name: 'title', label: 'Title', required: true, placeholder: 'My Awesome Project' },
   { name: 'description', label: 'Description', type: 'textarea' as const, required: true, placeholder: 'Describe your project...' },
   { name: 'demoUrl', label: 'Live URL', type: 'url' as const, placeholder: 'https://myproject.com' },
+  { name: 'youtubeUrl', label: 'YouTube URL (Optional)', type: 'url' as const, placeholder: 'https://www.youtube.com/watch?v=...' },
   { name: 'githubUrl', label: 'GitHub URL', type: 'url' as const, placeholder: 'https://github.com/...' },
-
-  // 👇 مهم: string input عادي
   { name: 'technologies', label: 'Tags (comma-separated)', type: 'text' as const, placeholder: 'React, Node.js, Tailwind' },
-
   { name: 'featured', label: 'Featured', type: 'checkbox' as const, placeholder: 'Mark as featured' },
   { name: 'order', label: 'Order', type: 'number' as const, placeholder: '0' },
 ];
@@ -32,27 +30,25 @@ export default function AdminProjects() {
   const { data, loading, refetch } = useApi<Project[]>(() => projectsApi.getAll());
   const items = data || [];
 
-  // 🔥 CREATE
+  // CREATE
   const handleAdd = async (d: any) => {
     const payload = {
       ...d,
+      youtubeUrl: d.youtubeUrl?.trim() || undefined,
       technologies: normalizeTech(d.technologies),
-      
     };
 
-
     await projectsApi.create(payload);
-    
   };
 
-  // 🔥 UPDATE
+  // UPDATE
   const handleUpdate = async (id: string, d: any) => {
     const payload = {
       ...d,
+      youtubeUrl: d.youtubeUrl ? d.youtubeUrl.trim() : '',
       technologies: normalizeTech(d.technologies),
     };
 
-    console.log('UPDATE payload:', payload);
     await projectsApi.update(id, payload);
   };
 
@@ -102,6 +98,18 @@ export default function AdminProjects() {
                 </a>
               )}
 
+              {p.youtubeUrl && (
+                <a
+                  href={p.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-red-500 flex items-center gap-1 hover:underline"
+                >
+                  <FiYoutube size={10} />
+                  Video
+                </a>
+              )}
+
               {p.githubUrl && (
                 <a
                   href={p.githubUrl}
@@ -130,8 +138,6 @@ export default function AdminProjects() {
           </div>
         </div>
       )}
-      
     />
-    
   );
 }
