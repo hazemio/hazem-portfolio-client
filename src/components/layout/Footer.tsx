@@ -39,7 +39,7 @@ export default function Footer() {
         )}
 
         <p className="text-[var(--text-muted)] text-sm flex items-center gap-1.5">
-          Built with <FiHeart size={13} className="text-rose-500" /> by Hazem Gamal © {new Date().getFullYear()}
+          Built with Dragon Design by Hazem Gamal © {new Date().getFullYear()}
         </p>
       </div>
     </footer>

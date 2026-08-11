@@ -148,3 +148,6 @@ export function useParallax(speed = 0.5) {
 
   return ref;
 }
+
+export * from './useProject';
+export * from './useRelatedProjects';

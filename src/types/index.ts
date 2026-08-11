@@ -11,18 +11,22 @@ export interface Profile {
 }
 
 export interface Project {
-  technologies: any;
-  demoUrl: string;
   id: string;
   title: string;
   description: string;
+  detailedContent?: string;
   imageUrl?: string;
-  liveUrl?: string;
+  imageId?: string;
+  youtubeUrl?: string;
   githubUrl?: string;
-  tags: string[];
+  demoUrl?: string;
+  liveUrl?: string;
+  technologies?: string[];
+  tags?: string[];
   featured: boolean;
   order: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Certificate {

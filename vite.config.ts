@@ -1,31 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
- build: {
-  rollupOptions: {
-    output: {
-      manualChunks(id) {
-        if (id.includes('node_modules')) {
-          return 'vendor';
-        }
-
-        if (id.includes('framer-motion')) {
-          return 'animation';
-        }
-
-        if (id.includes('react-icons')) {
-          return 'icons';
-        }
-
-        if (id.includes('zustand') || id.includes('redux')) {
-          return 'store';
-        }
-      }
-    }
-  }
-},
+  resolve: {
+    alias: {
+      'react-hot-toast': path.resolve(
+        __dirname,
+        'node_modules/react-hot-toast/dist/index.js',
+      ),
+    },
+  },
+  css: {
+    transformer: 'postcss',
+  },
+  build: {
+    cssMinify: false,
+    chunkSizeWarningLimit: 10000,
+  },
   server: {
     port: 5173,
     proxy: {
