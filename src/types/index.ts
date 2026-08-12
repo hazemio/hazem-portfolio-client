@@ -10,6 +10,7 @@ export interface Profile {
   yearsExperience?: string;
   completedProjectsLabel?: string;
   clientSatisfaction?: string;
+  happyClients?: string;
   projectsCount?: number;
   email?: string;
   phone?: string;

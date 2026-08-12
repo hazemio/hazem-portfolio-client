@@ -42,7 +42,11 @@ export default function AdminProfile() {
     if (!file) return;
     setUploadingAbout(true);
     try {
-      await profileApi.uploadImage(file);
+      const res = await profileApi.uploadImage(file);
+      const updatedProfile = res.data;
+      if (updatedProfile) {
+        setForm((prev) => ({ ...prev, ...updatedProfile }));
+      }
       toast.success('About section profile image updated!');
       refetch();
     } catch {
@@ -57,7 +61,11 @@ export default function AdminProfile() {
     if (!file) return;
     setUploadingHero(true);
     try {
-      await profileApi.uploadHeroImage(file);
+      const res = await profileApi.uploadHeroImage(file);
+      const updatedProfile = res.data;
+      if (updatedProfile) {
+        setForm((prev) => ({ ...prev, ...updatedProfile }));
+      }
       toast.success('Hero section profile image updated!');
       refetch();
     } catch {
@@ -80,6 +88,7 @@ export default function AdminProfile() {
     { name: 'yearsExperience', label: 'Years Experience', type: 'text', placeholder: '3+' },
     { name: 'completedProjectsLabel', label: 'Completed Projects Label (Fallback)', type: 'text', placeholder: '50+' },
     { name: 'clientSatisfaction', label: 'Client Satisfaction', type: 'text', placeholder: '100%' },
+    { name: 'happyClients', label: 'Happy Clients', type: 'text', placeholder: '20+' },
   ];
 
   return (
@@ -207,7 +216,7 @@ export default function AdminProfile() {
                   <h3 className="font-display font-semibold text-lg text-[var(--text-primary)] mb-4">
                     Hero Section Statistics
                   </h3>
-                  <div className="grid sm:grid-cols-3 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     {statFields.map((f) => (
                       <div key={f.name}>
                         <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
