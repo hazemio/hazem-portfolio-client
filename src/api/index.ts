@@ -58,7 +58,6 @@ api.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       clearCsrfToken();
-      // Only redirect if currently on an admin page
       if (
         window.location.pathname.startsWith('/admin') &&
         window.location.pathname !== '/admin/login'
@@ -97,9 +96,7 @@ export const profileApi = {
       fd,
       {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 60000,
       },
     );
@@ -114,13 +111,25 @@ export const profileApi = {
       fd,
       {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 60000,
       },
     );
   },
+
+  /** Upload Football Heroes video — multipart/form-data, field: "video" */
+  uploadFootballVideo: (file: File) => {
+    const fd = new FormData();
+    fd.append('video', file);
+    return api.post('/profile/upload-football-video', fd, {
+      withCredentials: true,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 180000,
+    });
+  },
+
+  /** Delete Football Heroes video */
+  deleteFootballVideo: () => api.delete('/profile/football-video'),
 };
 
 // ─── Projects ──────────────────────────────────────────────────────────────────

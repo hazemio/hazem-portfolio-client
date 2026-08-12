@@ -12,6 +12,10 @@ export interface Profile {
   clientSatisfaction?: string;
   happyClients?: string;
   projectsCount?: number;
+  footballVideoType?: 'CLOUDINARY_UPLOAD' | 'CLOUDINARY_URL' | 'YOUTUBE';
+  footballVideoUrl?: string;
+  footballVideoPublicId?: string;
+  footballYoutubeUrl?: string;
   email?: string;
   phone?: string;
   location?: string;
