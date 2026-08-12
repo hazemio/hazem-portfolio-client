@@ -21,6 +21,8 @@ export default function HeroSection() {
 
   const { data: profile, loading } = useApi<Profile>(() => profileApi.get());
 
+  const heroImage = profile?.heroImageUrl || profile?.imageUrl;
+
   // GSAP master timeline
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 });
@@ -98,6 +100,13 @@ export default function HeroSection() {
       </span>
     ));
 
+  const yearsExp = profile?.yearsExperience || '3+';
+  const projectsDone =
+    profile?.projectsCount !== undefined
+      ? `${profile.projectsCount}+`
+      : profile?.completedProjectsLabel || '50+';
+  const clientSat = profile?.clientSatisfaction || '100%';
+
   return (
     <section
       id="hero"
@@ -133,7 +142,8 @@ export default function HeroSection() {
               className="font-mono text-sm text-brand-500 dark:text-brand-400 mb-4 flex items-center gap-2"
             >
               <span className="w-8 h-px bg-brand-500" />
-Access Granted: Welcome to My Digital System            </span>
+              Access Granted: Welcome to My Digital System
+            </span>
 
             <h1
               ref={headingRef}
@@ -199,12 +209,12 @@ Access Granted: Welcome to My Digital System            </span>
               </button>
             </div>
 
-            {/* Stats row */}
+            {/* Editable Stats row */}
             <div className="mt-14 flex items-center gap-10">
               {[
-                { value: `---`,   label: 'Years Experience' },
-                { value: `---`,  label: 'Projects Done' },
-                { value: `---`, label: 'Client Satisfaction' },
+                { value: yearsExp, label: 'Years Experience' },
+                { value: projectsDone, label: 'Projects Done' },
+                { value: clientSat, label: 'Client Satisfaction' },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="font-display font-bold text-2xl sm:text-3xl gradient-text">{stat.value}</div>
@@ -214,7 +224,7 @@ Access Granted: Welcome to My Digital System            </span>
             </div>
           </div>
 
-          {/* Right — Profile image */}
+          {/* Right — Hero profile image */}
           <div className="flex justify-center lg:justify-end" ref={imageRef}>
             <div className="relative">
               {/* Outer ring */}
@@ -232,10 +242,10 @@ Access Granted: Welcome to My Digital System            </span>
               >
                 {loading ? (
                   <div className="skeleton w-full h-full" />
-                ) : profile?.imageUrl ? (
+                ) : heroImage ? (
                   <img
-                    src={profile.imageUrl}
-                    alt={profile.name}
+                    src={heroImage}
+                    alt={profile?.name || 'Hero Profile Image'}
                     className="w-full h-full object-cover"
                   />
                 ) : (

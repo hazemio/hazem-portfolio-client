@@ -4,6 +4,13 @@ export interface Profile {
   role: string;
   bio?: string;
   imageUrl?: string;
+  imageId?: string;
+  heroImageUrl?: string;
+  heroImageId?: string;
+  yearsExperience?: string;
+  completedProjectsLabel?: string;
+  clientSatisfaction?: string;
+  projectsCount?: number;
   email?: string;
   phone?: string;
   location?: string;

@@ -1,14 +1,11 @@
-
-
 import axios from 'axios';
-import { time } from 'framer-motion';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 axios.defaults.withCredentials = true;
 
 export const api = axios.create({
-  baseURL:         API_URL,
+  baseURL: API_URL,
   withCredentials: true,
 });
 
@@ -22,6 +19,7 @@ export async function getCsrfToken() {
 
   return csrfToken;
 }
+
 export function clearCsrfToken() {
   csrfToken = null;
 }
@@ -34,10 +32,7 @@ api.interceptors.request.use(async (config) => {
 
   const url = config.url || '';
 
-  if (
-    url.includes('/auth/login') ||
-    url.includes('/auth/csrf-token')
-  ) {
+  if (url.includes('/auth/login') || url.includes('/auth/csrf-token')) {
     return config;
   }
 
@@ -64,13 +59,14 @@ api.interceptors.response.use(
     if (err.response?.status === 401) {
       clearCsrfToken();
       // Only redirect if currently on an admin page
-      if (window.location.pathname.startsWith('/admin') &&
-          window.location.pathname !== '/admin/login') {
+      if (
+        window.location.pathname.startsWith('/admin') &&
+        window.location.pathname !== '/admin/login'
+      ) {
         window.location.href = '/admin/login';
       }
     }
     if (err.response?.status === 403) {
-      // CSRF token may have expired — clear and retry next request
       clearCsrfToken();
     }
     return Promise.reject(err);
@@ -79,46 +75,62 @@ api.interceptors.response.use(
 
 // ─── Auth ──────────────────────────────────────────────────────────────────────
 export const authApi = {
-  login:          (data: { email: string; password: string }) =>
+  login: (data: { email: string; password: string }) =>
     api.post('/auth/login', data),
-  logout:         () => api.post('/auth/logout'),
-  me:             () => api.get('/auth/me'),
+  logout: () => api.post('/auth/logout'),
+  me: () => api.get('/auth/me'),
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     api.patch('/auth/change-password', data),
 };
 
 // ─── Profile ───────────────────────────────────────────────────────────────────
 export const profileApi = {
-  get:    () => api.get('/profile'),
+  get: () => api.get('/profile'),
   update: (data: Record<string, unknown>) => api.patch('/profile', data),
 
-  /** Upload profile image — multipart/form-data, field: "image" */
+  /** Upload profile image (About Section) — multipart/form-data, field: "image" */
   uploadImage: (file: File) => {
     const fd = new FormData();
     fd.append('image', file);
     return api.post<{ imageUrl: string; imageId: string }>(
       '/profile/upload-image',
-       fd,
-  {
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    timeout: 60000,
-  }
-      
+      fd,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000,
+      },
+    );
+  },
+
+  /** Upload hero profile image (Hero Section) — multipart/form-data, field: "image" */
+  uploadHeroImage: (file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return api.post<{ heroImageUrl: string; heroImageId: string }>(
+      '/profile/upload-hero-image',
+      fd,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000,
+      },
     );
   },
 };
 
 // ─── Projects ──────────────────────────────────────────────────────────────────
 export const projectsApi = {
-  getAll:  () => api.get('/projects'),
-  getOne:  (id: string) => api.get(`/projects/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/projects', data),
-  update:  (id: string, data: Record<string, unknown>) => api.patch(`/projects/${id}`, data),
-  delete:  (id: string) => api.delete(`/projects/${id}`),
-
+  getAll: () => api.get('/projects'),
+  getOne: (id: string) => api.get(`/projects/${id}`),
+  create: (data: Record<string, unknown>) => api.post('/projects', data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/projects/${id}`, data),
+  delete: (id: string) => api.delete(`/projects/${id}`),
 
   uploadImage: (projectId: string, file: File) => {
     const fd = new FormData();
@@ -133,12 +145,12 @@ export const projectsApi = {
 
 // ─── Certificates ──────────────────────────────────────────────────────────────
 export const certificatesApi = {
-  getAll:  () => api.get('/certificates'),
-  getOne:  (id: string) => api.get(`/certificates/${id}`),
-  create:  (data: Record<string, unknown>) => api.post('/certificates', data),
-  update:  (id: string, data: Record<string, unknown>) => api.patch(`/certificates/${id}`, data),
-  delete:  (id: string) => api.delete(`/certificates/${id}`),
-
+  getAll: () => api.get('/certificates'),
+  getOne: (id: string) => api.get(`/certificates/${id}`),
+  create: (data: Record<string, unknown>) => api.post('/certificates', data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/certificates/${id}`, data),
+  delete: (id: string) => api.delete(`/certificates/${id}`),
 
   uploadImage: (certId: string, file: File) => {
     const fd = new FormData();
@@ -153,29 +165,33 @@ export const certificatesApi = {
 
 // ─── Social Links ──────────────────────────────────────────────────────────────
 export const socialLinksApi = {
-  getAll:  () => api.get('/social-links'),
-  create:  (data: Record<string, unknown>) => api.post('/social-links', data),
-  update:  (id: string, data: Record<string, unknown>) => api.patch(`/social-links/${id}`, data),
-  delete:  (id: string) => api.delete(`/social-links/${id}`),
+  getAll: () => api.get('/social-links'),
+  create: (data: Record<string, unknown>) => api.post('/social-links', data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/social-links/${id}`, data),
+  delete: (id: string) => api.delete(`/social-links/${id}`),
 };
 
 // ─── Messages ──────────────────────────────────────────────────────────────────
 export const messagesApi = {
-  send:        (data: Record<string, unknown>) => api.post('/messages', data),
-  getAll:      () => api.get('/messages'),
-  getOne:      (id: string) => api.get(`/messages/${id}`),
-  markRead:    (id: string) => api.patch(`/messages/${id}/read`),
-  delete:      (id: string) => api.delete(`/messages/${id}`),
+  send: (data: Record<string, unknown>) => api.post('/messages', data),
+  getAll: () => api.get('/messages'),
+  getOne: (id: string) => api.get(`/messages/${id}`),
+  markRead: (id: string) => api.patch(`/messages/${id}/read`),
+  delete: (id: string) => api.delete(`/messages/${id}`),
   unreadCount: () => api.get('/messages/unread-count'),
 };
 
 // ─── Skills ────────────────────────────────────────────────────────────────────
 export const skillsApi = {
-  getAll:  () => api.get('/skills'),
-  create:  (data: Record<string, unknown>) => api.post('/skills', data),
-  update:  (id: string, data: Record<string, unknown>) => api.patch(`/skills/${id}`, data),
-  delete:  (id: string) => api.delete(`/skills/${id}`),
+  getAll: () => api.get('/skills'),
+  create: (data: Record<string, unknown>) => api.post('/skills', data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/skills/${id}`, data),
+  delete: (id: string) => api.delete(`/skills/${id}`),
 };
+
+// ─── Experience ────────────────────────────────────────────────────────────────
 export const experienceApi = {
   getAll: () => api.get('/experience'),
   getOne: (id: string) => api.get(`/experience/${id}`),
