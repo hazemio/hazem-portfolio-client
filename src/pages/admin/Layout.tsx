@@ -3,22 +3,25 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiGrid, FiUser, FiCode, FiAward, FiLink, FiMessageSquare,
-  FiBriefcase, FiStar, FiLogOut, FiSun, FiMoon, FiMenu, FiX,
+  FiBriefcase, FiBookOpen, FiStar, FiLogOut, FiSun, FiMoon, FiMenu, FiX,
   FiExternalLink,
 } from 'react-icons/fi';
 import { useAuthStore, useThemeStore } from '../../store';
 import { useApi } from '../../hooks';
 import { messagesApi } from '../../api';
 
+const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
+
 const NAV = [
-  { to: '/admin',                  label: 'Dashboard',    icon: FiGrid },
-  { to: '/admin/profile',          label: 'Profile',      icon: FiUser },
-  { to: '/admin/projects',         label: 'Projects',     icon: FiCode },
-  { to: '/admin/certificates',     label: 'Certificates', icon: FiAward },
-  { to: '/admin/social-links',     label: 'Social Links', icon: FiLink },
-  { to: '/admin/skills',           label: 'Skills',       icon: FiStar },
-  { to: '/admin/experience',       label: 'Experience',   icon: FiBriefcase },
-  { to: '/admin/messages',         label: 'Messages',     icon: FiMessageSquare },
+  { to: ADMIN_BASE,                  label: 'Dashboard',    icon: FiGrid },
+  { to: `${ADMIN_BASE}/profile`,      label: 'Profile',      icon: FiUser },
+  { to: `${ADMIN_BASE}/projects`,     label: 'Projects',     icon: FiCode },
+  { to: `${ADMIN_BASE}/certificates`, label: 'Certificates', icon: FiAward },
+  { to: `${ADMIN_BASE}/social-links`, label: 'Social Links', icon: FiLink },
+  { to: `${ADMIN_BASE}/skills`,       label: 'Skills',       icon: FiStar },
+  { to: `${ADMIN_BASE}/experience`,   label: 'Experience',   icon: FiBriefcase },
+  { to: `${ADMIN_BASE}/education`,    label: 'Education',    icon: FiBookOpen },
+  { to: `${ADMIN_BASE}/messages`,     label: 'Messages',     icon: FiMessageSquare },
 ];
 
 export default function AdminLayout() {
@@ -36,7 +39,7 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/tech/mode1/dash/hg/admin/login');
   };
 
   const SidebarContent = () => (
@@ -60,7 +63,7 @@ export default function AdminLayout() {
           <NavLink
             key={to}
             to={to}
-            end={to === '/admin'}
+            end={to === ADMIN_BASE}
             onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
               `admin-sidebar-item ${isActive ? 'active' : ''}`

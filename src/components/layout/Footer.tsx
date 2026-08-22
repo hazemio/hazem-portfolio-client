@@ -10,7 +10,7 @@ export default function Footer() {
   const location = useLocation();
   const { data: socials } = useApi<SocialLink[]>(() => socialLinksApi.getAll());
 
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith('/tech/mode1/dash/hg/admin')) return null;
 
   return (
     <footer className="border-t border-[var(--border)] py-10 mt-20">

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import { FiCode, FiAward, FiMessageSquare, FiLink, FiStar, FiBriefcase, FiArrowRight } from 'react-icons/fi';
+import { FiCode, FiAward, FiMessageSquare, FiLink, FiStar, FiBriefcase, FiBookOpen, FiArrowRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../hooks';
-import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi } from '../../api';
+import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi, educationApi } from '../../api';
+
+const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
 
 function StatCard({ label, value, icon: Icon, to, color, loading }: any) {
   return (
@@ -36,16 +38,18 @@ export default function AdminDashboard() {
   const { data: socials,      loading: l4 } = useApi(() => socialLinksApi.getAll());
   const { data: skills,       loading: l5 } = useApi(() => skillsApi.getAll());
   const { data: experiences,  loading: l6 } = useApi(() => experienceApi.getAll());
+  const { data: education,    loading: l7 } = useApi(() => educationApi.getAll());
 
   const unread = (messages as any[])?.filter((m) => !m.read).length || 0;
 
   const stats = [
-    { label: 'Projects',     value: (projects as any[])?.length,    icon: FiCode,          to: '/admin/projects',      color: 'bg-brand-500',         loading: l1 },
-    { label: 'Certificates', value: (certs as any[])?.length,       icon: FiAward,         to: '/admin/certificates',  color: 'bg-accent-violet',     loading: l2 },
-    { label: 'Messages',     value: `${unread} new`,                icon: FiMessageSquare, to: '/admin/messages',      color: 'bg-accent-rose',       loading: l3 },
-    { label: 'Social Links', value: (socials as any[])?.length,     icon: FiLink,          to: '/admin/social-links',  color: 'bg-accent-cyan',       loading: l4 },
-    { label: 'Skills',       value: (skills as any[])?.length,      icon: FiStar,          to: '/admin/skills',        color: 'bg-accent-amber',      loading: l5 },
-    { label: 'Experience',   value: (experiences as any[])?.length, icon: FiBriefcase,     to: '/admin/experience',    color: 'bg-accent-emerald',    loading: l6 },
+    { label: 'Projects',     value: (projects as any[])?.length,    icon: FiCode,          to: `${ADMIN_BASE}/projects`,      color: 'bg-brand-500',         loading: l1 },
+    { label: 'Certificates', value: (certs as any[])?.length,       icon: FiAward,         to: `${ADMIN_BASE}/certificates`,  color: 'bg-accent-violet',     loading: l2 },
+    { label: 'Messages',     value: `${unread} new`,                icon: FiMessageSquare, to: `${ADMIN_BASE}/messages`,      color: 'bg-accent-rose',       loading: l3 },
+    { label: 'Social Links', value: (socials as any[])?.length,     icon: FiLink,          to: `${ADMIN_BASE}/social-links`,  color: 'bg-accent-cyan',       loading: l4 },
+    { label: 'Skills',       value: (skills as any[])?.length,      icon: FiStar,          to: `${ADMIN_BASE}/skills`,        color: 'bg-accent-amber',      loading: l5 },
+    { label: 'Experience',   value: (experiences as any[])?.length, icon: FiBriefcase,     to: `${ADMIN_BASE}/experience`,    color: 'bg-accent-emerald',    loading: l6 },
+    { label: 'Education',    value: (education as any[])?.length,   icon: FiBookOpen,      to: `${ADMIN_BASE}/education`,     color: 'bg-sky-500',           loading: l7 },
   ];
 
   return (
@@ -64,7 +68,7 @@ export default function AdminDashboard() {
       <div className="glass-light rounded-2xl border border-[var(--border)] overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
           <h2 className="font-display font-semibold text-[var(--text-primary)]">Recent Messages</h2>
-          <Link to="/admin/messages" className="text-sm text-brand-500 hover:underline flex items-center gap-1">
+          <Link to={`${ADMIN_BASE}/messages`} className="text-sm text-brand-500 hover:underline flex items-center gap-1">
             View all <FiArrowRight size={13} />
           </Link>
         </div>

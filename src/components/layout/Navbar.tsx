@@ -52,89 +52,90 @@ export default function Navbar() {
   };
 
   // Don't show on admin pages
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith('/tech/mode1/dash/hg/admin')) return null;
 
   return (
     <header
       ref={navRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'glass-light shadow-glass py-3'
-          : 'bg-transparent py-5'
+        scrolled ? 'py-3 navbar-scrolled shadow-glass' : 'py-5 bg-transparent'
       }`}
     >
       <div className="container-custom flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          to="/"
-          className="font-display font-bold text-xl gradient-text select-none"
-          onClick={() => handleNav('#hero')}
+        {/* Brand logo */}
+        <a
+          href="#hero"
+          className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)] flex items-center gap-1 group"
         >
-          HG<span className="text-brand-500">.</span>
-        </Link>
+          <span className="gradient-text">&lt;HG</span>
+          <span className="text-brand-500 group-hover:translate-x-0.5 transition-transform inline-block">/&gt;</span>
+        </a>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        {/* Desktop Nav links */}
+        <nav className="hidden md:flex items-center gap-1 glass-light rounded-full px-4 py-1.5 border border-[var(--border)]">
           {NAV_LINKS.map((link) => (
-            <button
+            <a
               key={link.href}
-              onClick={() => handleNav(link.href)}
-              className={`animated-underline px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNav(link.href);
+              }}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                 active === link.href
-                  ? 'text-brand-500'
+                  ? 'text-brand-500 bg-brand-500/10 dark:bg-brand-500/20 font-semibold'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
               {link.label}
-            </button>
+            </a>
           ))}
         </nav>
 
-        {/* Right actions */}
+        {/* Right tools */}
         <div className="flex items-center gap-3">
           {/* Theme toggle */}
-          <motion.button
-            whileTap={{ scale: 0.9, rotate: 180 }}
+          <button
             onClick={toggleTheme}
-            className="p-2 rounded-full glass border border-[var(--border)] text-[var(--text-secondary)] hover:text-brand-500 transition-colors"
             aria-label="Toggle theme"
+            className="p-2 rounded-full glass-light hover:bg-[var(--bg-overlay)] text-[var(--text-primary)] transition-colors border border-[var(--border)]"
           >
             {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
-          </motion.button>
+          </button>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu trigger */}
           <button
-            className="md:hidden p-2 rounded-md text-[var(--text-secondary)]"
-            onClick={() => setOpen((p) => !p)}
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+            className="md:hidden p-2 rounded-full glass-light text-[var(--text-primary)] border border-[var(--border)]"
           >
-            {open ? <FiX size={22} /> : <FiMenu size={22} />}
+            {open ? <FiX size={20} /> : <FiMenu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden glass-light border-t border-[var(--border)] overflow-hidden"
+            className="md:hidden glass-light border-b border-[var(--border)] overflow-hidden"
           >
-            <div className="container-custom py-4 flex flex-col gap-1">
+            <div className="container-custom py-4 flex flex-col gap-2">
               {NAV_LINKS.map((link) => (
-                <button
+                <a
                   key={link.href}
-                  onClick={() => handleNav(link.href)}
-                  className={`text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    active === link.href
-                      ? 'bg-brand-500/10 text-brand-500'
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--bg-raised)]'
-                  }`}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNav(link.href);
+                  }}
+                  className="px-4 py-2.5 rounded-xl text-base font-medium text-[var(--text-secondary)] hover:text-brand-500 hover:bg-brand-500/10 transition-all"
                 >
                   {link.label}
-                </button>
+                </a>
               ))}
             </div>
           </motion.div>

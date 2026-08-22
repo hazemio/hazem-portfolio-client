@@ -20,7 +20,7 @@ export default function SocialSidebar() {
     );
   }, [socials]);
 
-  if (location.pathname.startsWith('/admin')) return null;
+  if (location.pathname.startsWith('/tech/mode1/dash/hg/admin')) return null;
 
   return (
     <div

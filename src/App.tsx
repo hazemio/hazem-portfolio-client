@@ -9,8 +9,8 @@ import PortfolioPage from './pages/Portfolio';
 import AdminLogin from './pages/admin/Login';
 import AdminLayout from './pages/admin/Layout';
 import ProtectedRoute from './components/admin/ProtectedRoute';
-import { AdminSocialLinks, AdminSkills, AdminExperience } from './pages/admin/AdminEntities';
-//import FotballHeroSection from './components/sections/FotballHeroSection';
+import { AdminSocialLinks, AdminSkills, AdminExperience, AdminEducation } from './pages/admin/AdminEntities';
+
 const ProjectDetailsPage = lazy(() => import('./pages/ProjectDetails'));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const AdminProfile = lazy(() => import('./pages/admin/AdminProfile'));
@@ -69,9 +69,9 @@ export default function App() {
             }
           />
         </Route>
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/tech/mode1/dash/hg/admin/login" element={<AdminLogin />} />
         <Route
-          path="/admin"
+          path="/tech/mode1/dash/hg/admin"
           element={
             <ProtectedRoute>
               <AdminLayout />
@@ -131,6 +131,14 @@ export default function App() {
             element={
               <Suspense fallback={<Spin />}>
                 <AdminExperience />
+              </Suspense>
+            }
+          />
+          <Route
+            path="education"
+            element={
+              <Suspense fallback={<Spin />}>
+                <AdminEducation />
               </Suspense>
             }
           />

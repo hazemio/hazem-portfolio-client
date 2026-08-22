@@ -1,9 +1,9 @@
 import { useApi } from '../../hooks';
-import { socialLinksApi, skillsApi, experienceApi } from '../../api';
-import { SocialLink, Skill, Experience } from '../../types';
+import { socialLinksApi, skillsApi, experienceApi, educationApi } from '../../api';
+import { SocialLink, Skill, Experience, Education } from '../../types';
 import CrudTable from '../../components/admin/CrudTable';
 import { DynamicIcon } from '../../utils/icons';
-import { FiBriefcase } from 'react-icons/fi';
+import { FiBriefcase, FiBookOpen } from 'react-icons/fi';
 
 // ── Social Links ────────────────────────────────────────────
 const SOCIAL_FIELDS = [
@@ -90,7 +90,7 @@ const EXP_FIELDS = [
   { name: 'startDate',   label: 'Start Date',  required: true,  placeholder: '2022-01' },
   { name: 'endDate',     label: 'End Date',    placeholder: '2024-01' },
   { name: 'current',     label: 'Current Job', type: 'checkbox' as const, placeholder: 'I currently work here' },
-  { name: 'description', label: 'Description', type: 'textarea' as const, required: true, placeholder: 'What did you do here?' },
+  { name: 'description', label: 'Description', type: 'textarea' as const, placeholder: 'Key achievements or responsibilities...' },
   { name: 'order',       label: 'Order',       type: 'number' as const, placeholder: '0' },
 ];
 
@@ -105,17 +105,69 @@ export function AdminExperience() {
       onAdd={(d) => experienceApi.create(d).then(() => {})}
       onUpdate={(id, d) => experienceApi.update(id, d).then(() => {})}
       onDelete={(id) => experienceApi.delete(id).then(() => {})}
+      onUploadImg={(id, file) => experienceApi.uploadImage(id, file).then(() => {})}
       refetch={refetch}
       renderRow={(e: Experience) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-accent-emerald/10 flex items-center justify-center text-accent-emerald">
-            <FiBriefcase size={15} />
+          <div className="w-10 h-10 rounded-lg overflow-hidden bg-accent-emerald/10 flex items-center justify-center text-accent-emerald shrink-0 border border-[var(--border)]">
+            {e.imageUrl ? (
+              <img src={e.imageUrl} alt={e.company} className="w-full h-full object-cover" />
+            ) : (
+              <FiBriefcase size={16} />
+            )}
           </div>
           <div>
             <div className="font-medium text-[var(--text-primary)] text-sm">{e.title}</div>
             <div className="text-xs text-[var(--text-muted)]">
               {e.company} · {e.startDate} — {e.current ? 'Present' : e.endDate}
               {e.current && <span className="ml-1.5 text-accent-emerald font-medium">Current</span>}
+            </div>
+          </div>
+        </div>
+      )}
+    />
+  );
+}
+
+// ── Education ───────────────────────────────────────────────
+const EDU_FIELDS = [
+  { name: 'title',       label: 'Degree / Program Title', required: true,  placeholder: 'B.Sc. Computer Science' },
+  { name: 'institution', label: 'Institution / University', required: true, placeholder: 'Cairo University' },
+  { name: 'location',    label: 'Location',                placeholder: 'Cairo, Egypt' },
+  { name: 'startDate',   label: 'Start Date',             required: true,  placeholder: '2019' },
+  { name: 'endDate',     label: 'End Date',               placeholder: '2023' },
+  { name: 'current',     label: 'Currently Studying',      type: 'checkbox' as const, placeholder: 'Currently enrolled' },
+  { name: 'description', label: 'Description / Notes',     type: 'textarea' as const, placeholder: 'Major, achievements, or honors...' },
+  { name: 'order',       label: 'Order',                  type: 'number' as const, placeholder: '0' },
+];
+
+export function AdminEducation() {
+  const { data, loading, refetch } = useApi<Education[]>(() => educationApi.getAll());
+  return (
+    <CrudTable
+      title="Education"
+      items={data || []}
+      loading={loading}
+      fields={EDU_FIELDS}
+      onAdd={(d) => educationApi.create(d).then(() => {})}
+      onUpdate={(id, d) => educationApi.update(id, d).then(() => {})}
+      onDelete={(id) => educationApi.delete(id).then(() => {})}
+      onUploadImg={(id, file) => educationApi.uploadImage(id, file).then(() => {})}
+      refetch={refetch}
+      renderRow={(e: Education) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg overflow-hidden bg-accent-cyan/10 flex items-center justify-center text-accent-cyan shrink-0 border border-[var(--border)]">
+            {e.imageUrl ? (
+              <img src={e.imageUrl} alt={e.institution} className="w-full h-full object-cover" />
+            ) : (
+              <FiBookOpen size={16} />
+            )}
+          </div>
+          <div>
+            <div className="font-medium text-[var(--text-primary)] text-sm">{e.title}</div>
+            <div className="text-xs text-[var(--text-muted)]">
+              {e.institution} · {e.startDate} — {e.current ? 'Present' : e.endDate}
+              {e.current && <span className="ml-1.5 text-accent-cyan font-medium">Studying</span>}
             </div>
           </div>
         </div>

@@ -1,68 +1,53 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-
-axios.defaults.withCredentials = true;
-
-export const api = axios.create({
-  baseURL: API_URL,
+// Create a configured Axios instance
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
   withCredentials: true,
 });
 
+// CSRF Protection
 let csrfToken: string | null = null;
 
-export async function getCsrfToken() {
-  if (csrfToken) return csrfToken;
+export const setCsrfToken = (token: string) => {
+  csrfToken = token;
+};
 
-  const res = await api.get('/auth/csrf-token');
-  csrfToken = res.data.csrfToken;
-
-  return csrfToken;
-}
-
-export function clearCsrfToken() {
+export const clearCsrfToken = () => {
   csrfToken = null;
-}
+};
 
-// ─── Request interceptor: auto-attach CSRF token on mutations ─────────────────
-api.interceptors.request.use(async (config) => {
-  const method = config.method?.toLowerCase() || '';
-
-  const isMutating = ['post', 'put', 'patch', 'delete'].includes(method);
-
-  const url = config.url || '';
-
-  if (url.includes('/auth/login') || url.includes('/auth/csrf-token')) {
-    return config;
+// Request Interceptor: Attach CSRF Token
+api.interceptors.request.use((config) => {
+  if (
+    csrfToken &&
+    ['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase() || '')
+  ) {
+    config.headers['x-csrf-token'] = csrfToken;
   }
-
-  if (isMutating) {
-    try {
-      const token = await getCsrfToken();
-
-      config.headers = {
-        ...(config.headers || {}),
-        'X-CSRF-Token': token,
-      } as any;
-    } catch (e) {
-      console.warn('CSRF error:', e);
-    }
-  }
-
   return config;
 });
 
-// ─── Response interceptor: handle 401 (session expired) ───────────────────────
+// Response Interceptor: Extract CSRF Token & Handle 401
 api.interceptors.response.use(
-  (res) => res,
+  (response) => {
+    const headerToken = response.headers['x-csrf-token'];
+    if (headerToken) {
+      csrfToken = headerToken;
+    }
+    return response;
+  },
   (err) => {
     if (err.response?.status === 401) {
       clearCsrfToken();
       if (
-        window.location.pathname.startsWith('/admin') &&
-        window.location.pathname !== '/admin/login'
+        window.location.pathname.startsWith('/tech/mode1/dash/hg/admin') &&
+        window.location.pathname !== '/tech/mode1/dash/hg/admin/login'
       ) {
-        window.location.href = '/admin/login';
+        window.location.href = '/tech/mode1/dash/hg/admin/login';
       }
     }
     if (err.response?.status === 403) {
@@ -78,57 +63,33 @@ export const authApi = {
     api.post('/auth/login', data),
   logout: () => api.post('/auth/logout'),
   me: () => api.get('/auth/me'),
-  changePassword: (data: { currentPassword: string; newPassword: string }) =>
-    api.patch('/auth/change-password', data),
 };
 
 // ─── Profile ───────────────────────────────────────────────────────────────────
 export const profileApi = {
   get: () => api.get('/profile'),
   update: (data: Record<string, unknown>) => api.patch('/profile', data),
-
-  /** Upload profile image (About Section) — multipart/form-data, field: "image" */
   uploadImage: (file: File) => {
     const fd = new FormData();
     fd.append('image', file);
-    return api.post<{ imageUrl: string; imageId: string }>(
-      '/profile/upload-image',
-      fd,
-      {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 60000,
-      },
-    );
+    return api.post('/profile/upload-image', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
-
-  /** Upload hero profile image (Hero Section) — multipart/form-data, field: "image" */
   uploadHeroImage: (file: File) => {
     const fd = new FormData();
     fd.append('image', file);
-    return api.post<{ heroImageUrl: string; heroImageId: string }>(
-      '/profile/upload-hero-image',
-      fd,
-      {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 60000,
-      },
-    );
+    return api.post('/profile/upload-hero-image', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
-
-  /** Upload Football Heroes video — multipart/form-data, field: "video" */
   uploadFootballVideo: (file: File) => {
     const fd = new FormData();
     fd.append('video', file);
     return api.post('/profile/upload-football-video', fd, {
-      withCredentials: true,
       headers: { 'Content-Type': 'multipart/form-data' },
-      timeout: 180000,
     });
   },
-
-  /** Delete Football Heroes video */
   deleteFootballVideo: () => api.delete('/profile/football-video'),
 };
 
@@ -207,4 +168,33 @@ export const experienceApi = {
   create: (data: any) => api.post('/experience', data),
   update: (id: string, data: any) => api.patch(`/experience/${id}`, data),
   delete: (id: string) => api.delete(`/experience/${id}`),
+  uploadImage: (id: string, file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return api.post<{ imageUrl: string; imageId: string }>(
+      `/experience/upload-image/${id}`,
+      fd,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+  },
 };
+
+// ─── Education ─────────────────────────────────────────────────────────────────
+export const educationApi = {
+  getAll: () => api.get('/education'),
+  getOne: (id: string) => api.get(`/education/${id}`),
+  create: (data: any) => api.post('/education', data),
+  update: (id: string, data: any) => api.patch(`/education/${id}`, data),
+  delete: (id: string) => api.delete(`/education/${id}`),
+  uploadImage: (id: string, file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return api.post<{ imageUrl: string; imageId: string }>(
+      `/education/upload-image/${id}`,
+      fd,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+  },
+};
+
+export default api;

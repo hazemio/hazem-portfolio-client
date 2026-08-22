@@ -78,8 +78,27 @@ export interface Experience {
   startDate: string;
   endDate?: string;
   current: boolean;
-  description: string;
+  description?: string;
+  imageUrl?: string;
+  imageId?: string;
+  technologies?: string[];
   order: number;
+}
+
+export interface Education {
+  id: string;
+  title: string;
+  institution: string;
+  degree?: string;
+  location?: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+  description?: string;
+  imageUrl?: string;
+  imageId?: string;
+  order: number;
+  createdAt?: string;
 }
 
 export interface Message {

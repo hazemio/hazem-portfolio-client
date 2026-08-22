@@ -10,9 +10,9 @@ export default function AboutSection() {
   const { data: profile, loading } = useApi<Profile>(() => profileApi.get());
 
   const infoItems = [
-    { icon: FiMapPin,    label: 'Location', value: profile?.location || 'Cairo, Egypt' },
-    { icon: FiMail,      label: 'Email',    value: profile?.email    || 'hazem@example.com' },
-    { icon: FiPhone,     label: 'Phone',    value: profile?.phone    || '+20 100 000 0000' },
+    { icon: FiMapPin,    label: 'Location', value: profile?.location || 'Benisuef, Egypt' },
+    { icon: FiMail,      label: 'Email',    value: profile?.email    || 'hazemgmall45@gmail.com' },
+    { icon: FiPhone,     label: 'Phone',    value: profile?.phone    || '+20 102 554 7663' },
     { icon: FiCalendar,  label: 'Available', value: 'Full-time / Freelance' },
   ];
 
@@ -62,7 +62,7 @@ export default function AboutSection() {
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="text-2xl font-display font-bold gradient-text">- - -</div>
+              <div className="text-2xl font-display font-bold gradient-text">{profile?.yearsExperience || '5+' }</div>
               <div className="text-xs text-[var(--text-muted)]">Years Exp.</div>
             </motion.div>
           </div>

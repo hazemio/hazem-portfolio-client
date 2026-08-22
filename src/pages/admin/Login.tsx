@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import { authApi } from '../../api';
 import { useAuthStore, useThemeStore } from '../../store';
 
+const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
+
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
@@ -21,7 +23,7 @@ export default function AdminLogin() {
     document.documentElement.classList.toggle('dark', theme === 'dark');
 
     if (isAuthenticated) {
-      navigate('/admin');
+      navigate(ADMIN_BASE);
     }
   }, [isAuthenticated, theme, navigate]);
 
@@ -36,7 +38,7 @@ export default function AdminLogin() {
       login(res.data.user.id, res.data.user);
 
       toast.success('Welcome back! 👋');
-      navigate('/admin');
+      navigate(ADMIN_BASE);
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || 'Invalid credentials'
