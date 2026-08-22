@@ -83,7 +83,7 @@ export default function App() {
             element={
               <Suspense fallback={<Spin />}>
                 <AdminDashboard />
-              </Suspense>
+              </Suspense >
             }
           />
           <Route
