@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { FiHeart } from 'react-icons/fi';
+import { useLocation, Link } from 'react-router-dom';
 import { DynamicIcon } from '../../utils/icons';
 import { useApi } from '../../hooks';
 import { socialLinksApi } from '../../api';
@@ -38,9 +36,15 @@ export default function Footer() {
           </div>
         )}
 
-        <p className="text-[var(--text-muted)] text-sm flex items-center gap-1.5">
-          Built with Dragon Design by Hazem Gamal © {new Date().getFullYear()}
-        </p>
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-sm text-[var(--text-muted)]">
+          <p>
+            Built with Dragon Design by Hazem Gamal © {new Date().getFullYear()}
+          </p>
+          <span className="hidden sm:inline text-[var(--border)]">•</span>
+          <Link to="/privacy" className="hover:text-brand-500 transition-colors font-medium underline underline-offset-4">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </footer>
   );

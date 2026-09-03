@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
+import { FaLinkedin } from 'react-icons/fa';
 import { FiCode, FiAward, FiMessageSquare, FiLink, FiStar, FiBriefcase, FiBookOpen, FiArrowRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../hooks';
-import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi, educationApi } from '../../api';
+import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi, educationApi, linkedinApi } from '../../api';
 
 const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
 
@@ -39,6 +40,7 @@ export default function AdminDashboard() {
   const { data: skills,       loading: l5 } = useApi(() => skillsApi.getAll());
   const { data: experiences,  loading: l6 } = useApi(() => experienceApi.getAll());
   const { data: education,    loading: l7 } = useApi(() => educationApi.getAll());
+  const { data: linkedinPosts,loading: l8 } = useApi(() => linkedinApi.getAdminPosts());
 
   const unread = (messages as any[])?.filter((m) => !m.read).length || 0;
 
@@ -49,7 +51,8 @@ export default function AdminDashboard() {
     { label: 'Social Links', value: (socials as any[])?.length,     icon: FiLink,          to: `${ADMIN_BASE}/social-links`,  color: 'bg-accent-cyan',       loading: l4 },
     { label: 'Skills',       value: (skills as any[])?.length,      icon: FiStar,          to: `${ADMIN_BASE}/skills`,        color: 'bg-accent-amber',      loading: l5 },
     { label: 'Experience',   value: (experiences as any[])?.length, icon: FiBriefcase,     to: `${ADMIN_BASE}/experience`,    color: 'bg-accent-emerald',    loading: l6 },
-    { label: 'Education',    value: (education as any[])?.length,   icon: FiBookOpen,      to: `${ADMIN_BASE}/education`,     color: 'bg-sky-500',           loading: l7 },
+    { label: 'Education',    value: (education as any[])?.length,   icon: FiBookOpen,      to: `${ADMIN_BASE}/education`,     color: 'bg-indigo-500',        loading: l7 },
+    { label: 'LinkedIn',     value: (linkedinPosts as any[])?.length,icon: FaLinkedin,    to: `${ADMIN_BASE}/linkedin`,      color: 'bg-sky-600',           loading: l8 },
   ];
 
   return (
@@ -60,7 +63,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
         {stats.map((s) => <StatCard key={s.label} {...s} />)}
       </div>
 

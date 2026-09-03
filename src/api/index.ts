@@ -197,4 +197,17 @@ export const educationApi = {
   },
 };
 
+// ─── LinkedIn ──────────────────────────────────────────────────────────────────
+export const linkedinApi = {
+  getPosts: () => api.get('/linkedin/posts'),
+  getAdminPosts: () => api.get('/linkedin/admin/posts'),
+  getStatus: () => api.get('/linkedin/status'),
+  getAuthUrl: () => api.get('/linkedin/auth'),
+  sync: () => api.post('/linkedin/sync'),
+  disconnect: () => api.post('/linkedin/disconnect'),
+  updatePost: (id: string, data: { isVisible?: boolean; isFeatured?: boolean }) =>
+    api.patch(`/linkedin/posts/${id}`, data),
+  deletePost: (id: string) => api.delete(`/linkedin/posts/${id}`),
+};
+
 export default api;

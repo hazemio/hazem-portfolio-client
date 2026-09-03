@@ -5,6 +5,7 @@ import { useThemeStore } from './store';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import SocialSidebar from './components/layout/SocialSidebar';
+import RamadanBanner from './components/layout/RamadanBanner';
 import PortfolioPage from './pages/Portfolio';
 import AdminLogin from './pages/admin/Login';
 import AdminLayout from './pages/admin/Layout';
@@ -12,11 +13,13 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 import { AdminSocialLinks, AdminSkills, AdminExperience, AdminEducation } from './pages/admin/AdminEntities';
 
 const ProjectDetailsPage = lazy(() => import('./pages/ProjectDetails'));
+const PrivacyPage = lazy(() => import('./pages/Privacy'));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const AdminProfile = lazy(() => import('./pages/admin/AdminProfile'));
 const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
 const AdminCertificates = lazy(() => import('./pages/admin/AdminCertificates'));
 const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'));
+const AdminLinkedIn = lazy(() => import('./pages/admin/AdminLinkedIn'));
 
 const Spin = () => (
   <div className="flex items-center justify-center min-h-[50vh]">
@@ -27,6 +30,7 @@ const Spin = () => (
 function PublicLayout() {
   return (
     <>
+      <RamadanBanner />
       <Navbar />
       <SocialSidebar />
       <Outlet />
@@ -68,6 +72,14 @@ export default function App() {
               </Suspense>
             }
           />
+          <Route
+            path="/privacy"
+            element={
+              <Suspense fallback={<Spin />}>
+                <PrivacyPage />
+              </Suspense>
+            }
+          />
         </Route>
         <Route path="/tech/mode1/dash/hg/admin/login" element={<AdminLogin />} />
         <Route
@@ -83,7 +95,7 @@ export default function App() {
             element={
               <Suspense fallback={<Spin />}>
                 <AdminDashboard />
-              </Suspense >
+              </Suspense>
             }
           />
           <Route
@@ -139,6 +151,14 @@ export default function App() {
             element={
               <Suspense fallback={<Spin />}>
                 <AdminEducation />
+              </Suspense>
+            }
+          />
+          <Route
+            path="linkedin"
+            element={
+              <Suspense fallback={<Spin />}>
+                <AdminLinkedIn />
               </Suspense>
             }
           />

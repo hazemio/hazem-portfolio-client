@@ -20,6 +20,14 @@ export interface Profile {
   phone?: string;
   location?: string;
   cvUrl?: string;
+
+  // 🌙 Ramadan Theme & Countdown Settings
+  ramadanThemeEnabled?: boolean;
+  ramadanThemeForceEnabled?: boolean;
+  ramadanThemeStartDate?: string;
+  ramadanThemeEndDate?: string;
+  ramadanTimerEnabled?: boolean;
+  ramadanBannerText?: string;
 }
 
 export interface Project {
@@ -109,6 +117,38 @@ export interface Message {
   message: string;
   read: boolean;
   createdAt: string;
+}
+
+export interface LinkedInPost {
+  id: string;
+  linkedinId: string;
+  authorId?: string;
+  text: string;
+  postUrl?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  publishedAt?: string;
+  reactions: number;
+  comments: number;
+  reposts: number;
+  isVisible: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface LinkedInStatus {
+  isConnected: boolean;
+  isExpired: boolean;
+  memberId?: string;
+  memberName?: string;
+  memberEmail?: string;
+  lastSyncAt?: string;
+  syncStatus?: string;
+  totalPosts: number;
+  visiblePosts: number;
+  hasClientCredentials: boolean;
+  permissionNote?: string;
 }
 
 export interface Admin {

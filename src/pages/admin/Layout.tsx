@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaLinkedin } from 'react-icons/fa';
 import {
   FiGrid, FiUser, FiCode, FiAward, FiLink, FiMessageSquare,
   FiBriefcase, FiBookOpen, FiStar, FiLogOut, FiSun, FiMoon, FiMenu, FiX,
@@ -21,6 +22,7 @@ const NAV = [
   { to: `${ADMIN_BASE}/skills`,       label: 'Skills',       icon: FiStar },
   { to: `${ADMIN_BASE}/experience`,   label: 'Experience',   icon: FiBriefcase },
   { to: `${ADMIN_BASE}/education`,    label: 'Education',    icon: FiBookOpen },
+  { to: `${ADMIN_BASE}/linkedin`,     label: 'LinkedIn',     icon: FaLinkedin },
   { to: `${ADMIN_BASE}/messages`,     label: 'Messages',     icon: FiMessageSquare },
 ];
 

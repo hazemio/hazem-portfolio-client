@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiUpload, FiSave, FiUser, FiVideo, FiTrash2, FiPlay, FiLink } from 'react-icons/fi';
+import { FiUpload, FiSave, FiUser, FiVideo, FiTrash2, FiPlay, FiLink, FiMoon, FiClock } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { profileApi } from '../../api';
 import { useApi } from '../../hooks';
@@ -36,18 +36,51 @@ export default function AdminProfile() {
     }
   }, [profile]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    setForm((p) => ({
+      ...p,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const { id, imageUrl, imageId, heroImageUrl, heroImageId, projectsCount, createdAt, updatedAt, ...data } = form as any;
-      await profileApi.update(data);
-      toast.success('Profile updated!');
+      const payload = {
+        name: form.name,
+        role: form.role,
+        bio: form.bio,
+        email: form.email,
+        phone: form.phone,
+        location: form.location,
+        cvUrl: form.cvUrl,
+        yearsExperience: form.yearsExperience ?? null,
+        completedProjectsLabel: form.completedProjectsLabel ?? null,
+        clientSatisfaction: form.clientSatisfaction ?? null,
+        happyClients: form.happyClients ?? null,
+        footballVideoType: form.footballVideoType ?? null,
+        footballVideoUrl: form.footballVideoUrl ?? null,
+        footballVideoPublicId: form.footballVideoPublicId ?? null,
+        footballYoutubeUrl: form.footballYoutubeUrl ?? null,
+
+        // 🌙 Ramadan Seasonal Settings
+        ramadanThemeEnabled: !!form.ramadanThemeEnabled,
+        ramadanThemeForceEnabled: !!form.ramadanThemeForceEnabled,
+        ramadanThemeStartDate: form.ramadanThemeStartDate ?? null,
+        ramadanThemeEndDate: form.ramadanThemeEndDate ?? null,
+        ramadanTimerEnabled: !!form.ramadanTimerEnabled,
+        ramadanBannerText: form.ramadanBannerText ?? null,
+      };
+
+      const res = await profileApi.update(payload);
+      if (res.data) {
+        setForm(res.data);
+      }
+      toast.success('Profile & Ramadan settings updated!');
       refetch();
     } catch {
-      toast.error('Failed to update profile');
+      toast.error('Failed to update profile settings');
     } finally {
       setSaving(false);
     }
@@ -192,14 +225,14 @@ export default function AdminProfile() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-display font-bold text-3xl text-[var(--text-primary)]">Profile</h1>
+        <h1 className="font-display font-bold text-3xl text-[var(--text-primary)]">Profile & Seasonal Settings</h1>
         <p className="text-[var(--text-secondary)] mt-1">
-          Manage your personal information, hero statistics, profile images, and Football Heroes video.
+          Manage personal info, hero stats, profile images, Football Heroes video, and Ramadan theme.
         </p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Images & Video Card Column */}
+        {/* Images Column */}
         <div className="lg:col-span-1 space-y-6">
           {/* About Image */}
           <div className="glass-light rounded-2xl p-6 border border-[var(--border)] text-center">
@@ -263,18 +296,120 @@ export default function AdminProfile() {
           </div>
         </div>
 
-        {/* Form Column & Football Heroes Video Settings */}
+        {/* Form Column */}
         <div className="lg:col-span-2 space-y-6">
+          {/* 🌙 Ramadan Theme & Countdown Settings Card */}
+          <div className="glass-light rounded-2xl p-6 border border-amber-500/30 relative overflow-hidden bg-gradient-to-br from-amber-500/5 to-transparent">
+            <div className="flex items-center gap-2 mb-4">
+              <FiMoon className="text-amber-400 text-xl" />
+              <h3 className="font-display font-semibold text-lg text-[var(--text-primary)]">
+                Ramadan Theme & Countdown Settings (ثيم وعداد رمضان)
+              </h3>
+            </div>
+
+            <div className="space-y-4">
+              {/* Toggles */}
+              <div className="grid sm:grid-cols-3 gap-4">
+                <label className="flex items-center gap-2.5 cursor-pointer p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-overlay)]">
+                  <input
+                    type="checkbox"
+                    name="ramadanThemeForceEnabled"
+                    checked={!!form.ramadanThemeForceEnabled}
+                    onChange={handleChange}
+                    className="w-4 h-4 accent-amber-500"
+                  />
+                  <div>
+                    <span className="text-xs font-semibold block text-[var(--text-primary)]">Force Enable Theme</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">Enable anytime manually</span>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-2.5 cursor-pointer p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-overlay)]">
+                  <input
+                    type="checkbox"
+                    name="ramadanThemeEnabled"
+                    checked={!!form.ramadanThemeEnabled}
+                    onChange={handleChange}
+                    className="w-4 h-4 accent-amber-500"
+                  />
+                  <div>
+                    <span className="text-xs font-semibold block text-[var(--text-primary)]">Auto Enable</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">Enable during date range</span>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-2.5 cursor-pointer p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-overlay)]">
+                  <input
+                    type="checkbox"
+                    name="ramadanTimerEnabled"
+                    checked={!!form.ramadanTimerEnabled}
+                    onChange={handleChange}
+                    className="w-4 h-4 accent-amber-500"
+                  />
+                  <div>
+                    <span className="text-xs font-semibold block text-[var(--text-primary)]">Show Countdown</span>
+                    <span className="text-[10px] text-[var(--text-muted)]">Display timer widget</span>
+                  </div>
+                </label>
+              </div>
+
+              {/* Start Date & End Date Inputs */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
+                    Ramadan Start Date (Target Date for Countdown)
+                  </label>
+                  <input
+                    type="text"
+                    name="ramadanThemeStartDate"
+                    value={form.ramadanThemeStartDate || ''}
+                    onChange={handleChange}
+                    placeholder="2026-02-17T00:00:00"
+                    className="input-field text-xs font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
+                    Ramadan End Date
+                  </label>
+                  <input
+                    type="text"
+                    name="ramadanThemeEndDate"
+                    value={form.ramadanThemeEndDate || ''}
+                    onChange={handleChange}
+                    placeholder="2026-03-19T23:59:59"
+                    className="input-field text-xs font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Banner Message Text Input */}
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
+                  Ramadan Banner Text
+                </label>
+                <input
+                  type="text"
+                  name="ramadanBannerText"
+                  value={form.ramadanBannerText || ''}
+                  onChange={handleChange}
+                  placeholder="Ramadan Mubarak! 🌙 | رمضان مبارك"
+                  className="input-field text-xs"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Football Heroes Video Card */}
           <div className="glass-light rounded-2xl p-6 border border-brand-500/30 relative overflow-hidden">
             <div className="flex items-center gap-2 mb-4">
               <FiVideo className="text-brand-500 text-xl" />
               <h3 className="font-display font-semibold text-lg text-[var(--text-primary)]">
-                Football Heroes Video (أبطال الكرة)
+                Football Heroes Video (أابطال الكرة)
               </h3>
             </div>
 
-            {/* Video Source Selector — 3 Options */}
+            {/* Video Source Selector */}
             <div className="mb-5">
               <label className="block text-xs font-mono text-[var(--text-secondary)] mb-2 uppercase tracking-wider">
                 Video Source
@@ -316,7 +451,7 @@ export default function AdminProfile() {
               </div>
             </div>
 
-            {/* Source A: Upload Video (Cloudinary Upload) */}
+            {/* Source A: Upload Video */}
             {videoSource === 'CLOUDINARY_UPLOAD' && (
               <div className="space-y-4">
                 <input
@@ -554,7 +689,7 @@ export default function AdminProfile() {
                     className="btn-primary disabled:opacity-60"
                   >
                     <FiSave size={15} />
-                    <span>{saving ? 'Saving...' : 'Save Changes'}</span>
+                    <span>{saving ? 'Saving...' : 'Save All Changes'}</span>
                   </motion.button>
                 </div>
               </div>
