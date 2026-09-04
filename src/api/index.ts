@@ -199,15 +199,63 @@ export const educationApi = {
 
 // ─── LinkedIn ──────────────────────────────────────────────────────────────────
 export const linkedinApi = {
+  // Existing methods preserved
   getPosts: () => api.get('/linkedin/posts'),
   getAdminPosts: () => api.get('/linkedin/admin/posts'),
   getStatus: () => api.get('/linkedin/status'),
   getAuthUrl: () => api.get('/linkedin/auth'),
   sync: () => api.post('/linkedin/sync'),
   disconnect: () => api.post('/linkedin/disconnect'),
-  updatePost: (id: string, data: { isVisible?: boolean; isFeatured?: boolean }) =>
+  updatePost: (id: string, data: any) =>
     api.patch(`/linkedin/posts/${id}`, data),
   deletePost: (id: string) => api.delete(`/linkedin/posts/${id}`),
+
+  // Manual CRUD methods
+  getLinkedInPosts: () => api.get('/linkedin/posts'),
+  getPostById: (id: string) => api.get(`/linkedin/posts/${id}`),
+  createLinkedInPost: (data: FormData | Record<string, any>) => {
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      return api.post('/linkedin/posts', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return api.post('/linkedin/posts', data);
+  },
+  updateLinkedInPost: (id: string, data: FormData | Record<string, any>) => {
+    if (typeof FormData !== 'undefined' && data instanceof FormData) {
+      return api.patch(`/linkedin/posts/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    }
+    return api.patch(`/linkedin/posts/${id}`, data);
+  },
+  deleteLinkedInPost: (id: string) => api.delete(`/linkedin/posts/${id}`),
+  uploadLinkedInPostImage: (id: string, file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return api.post<{ imageUrl: string; imageId: string }>(
+      `/linkedin/posts/upload-image/${id}`,
+      fd,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+  },
+  uploadImage: (id: string, file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return api.post<{ imageUrl: string; imageId: string }>(
+      `/linkedin/posts/upload-image/${id}`,
+      fd,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+  },
 };
+
+export const {
+  getLinkedInPosts,
+  createLinkedInPost,
+  updateLinkedInPost,
+  deleteLinkedInPost,
+  uploadLinkedInPostImage,
+} = linkedinApi;
 
 export default api;

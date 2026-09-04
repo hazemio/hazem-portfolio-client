@@ -3,13 +3,25 @@ import { motion } from 'framer-motion';
 import { FaLinkedin } from 'react-icons/fa';
 import { FiExternalLink, FiCalendar, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useScrollReveal, useApi } from '../../hooks';
-import { linkedinApi, profileApi, socialLinksApi } from '../../api';
-import { LinkedInPost, Profile, SocialLink } from '../../types';
+import { linkedinApi, profileApi } from '../../api';
+import { LinkedInPost, Profile } from '../../types';
 
-function PostCard({ post, authorName, authorRole, authorImage }: { post: LinkedInPost; authorName: string; authorRole: string; authorImage?: string }) {
+function PostCard({
+  post,
+  authorName,
+  authorRole,
+  authorImage,
+}: {
+  post: LinkedInPost;
+  authorName: string;
+  authorRole: string;
+  authorImage?: string;
+}) {
   const [expanded, setExpanded] = useState(false);
-  const isLongText = post.text.length > 240;
-  const displayText = isLongText && !expanded ? `${post.text.slice(0, 240)}...` : post.text;
+  const postContent = post.content || post.text || '';
+  const isLongText = postContent.length > 240;
+  const displayText = isLongText && !expanded ? `${postContent.slice(0, 240)}...` : postContent;
+  const targetUrl = post.linkedinUrl || post.postUrl;
 
   const formattedDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', {
@@ -63,6 +75,30 @@ function PostCard({ post, authorName, authorRole, authorImage }: { post: LinkedI
           </div>
         </div>
 
+        {/* Post Title */}
+        {post.title && (
+          <h3 className="font-display font-semibold text-base text-[var(--text-primary)] mb-2 group-hover:text-sky-400 transition-colors">
+            {post.title}
+          </h3>
+        )}
+
+        {/* Media Preview (Image or Video) */}
+        {post.imageUrl && (
+          <div className="mb-4 rounded-xl overflow-hidden border border-[var(--border)] bg-black/40 max-h-60">
+            <img
+              src={post.imageUrl}
+              alt={post.title || 'LinkedIn Post Media'}
+              className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+            />
+          </div>
+        )}
+
+        {post.videoUrl && (
+          <div className="mb-4 rounded-xl overflow-hidden border border-[var(--border)] bg-black/60 max-h-60">
+            <video src={post.videoUrl} controls className="w-full h-full object-cover" />
+          </div>
+        )}
+
         {/* Post Content */}
         <div className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-line mb-4">
           {displayText}
@@ -83,19 +119,6 @@ function PostCard({ post, authorName, authorRole, authorImage }: { post: LinkedI
             </button>
           )}
         </div>
-
-        {/* Media Preview (Image or Video) */}
-        {post.imageUrl && (
-          <div className="mb-4 rounded-xl overflow-hidden border border-[var(--border)] bg-black/40 max-h-64">
-            <img src={post.imageUrl} alt="LinkedIn Post Media" className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" />
-          </div>
-        )}
-
-        {post.videoUrl && (
-          <div className="mb-4 rounded-xl overflow-hidden border border-[var(--border)] bg-black/60 max-h-64">
-            <video src={post.videoUrl} controls className="w-full h-full object-cover" />
-          </div>
-        )}
       </div>
 
       {/* Post Footer Action */}
@@ -105,9 +128,9 @@ function PostCard({ post, authorName, authorRole, authorImage }: { post: LinkedI
           <span>LinkedIn Post</span>
         </div>
 
-        {post.postUrl && (
+        {targetUrl && (
           <a
-            href={post.postUrl}
+            href={targetUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-sky-400 hover:text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 px-3 py-1.5 rounded-lg border border-sky-500/20 transition-all"
@@ -125,19 +148,17 @@ export default function LinkedInPostsSection() {
   const sectionRef = useScrollReveal();
   const { data: posts, loading } = useApi<LinkedInPost[]>(() => linkedinApi.getPosts());
   const { data: profile } = useApi<Profile>(() => profileApi.get());
-  const { data: socials } = useApi<SocialLink[]>(() => socialLinksApi.getAll());
-
-  // Find LinkedIn profile URL from social links or default
-  const linkedInSocial = (socials || []).find(
-    (s) => s.platform.toLowerCase().includes('linkedin') || s.url.includes('linkedin.com')
-  );
-  const linkedInUrl = linkedInSocial?.url || 'https://www.linkedin.com';
 
   const authorName = profile?.name || 'Hazem Gamal';
   const authorRole = profile?.role || 'Full Stack Developer';
   const authorImage = profile?.imageUrl || profile?.heroImageUrl;
 
-  const hasPosts = posts && posts.length > 0;
+  const hasPosts = Boolean(posts && posts.length > 0);
+
+  // Safety: If not loading and there are no posts, completely hide the section from the homepage
+  if (!loading && !hasPosts) {
+    return null;
+  }
 
   return (
     <section id="linkedin-posts" className="section-padding relative overflow-hidden bg-[var(--bg-raised)]/20">
@@ -163,9 +184,9 @@ export default function LinkedInPostsSection() {
               <div key={i} className="skeleton h-56 rounded-2xl" />
             ))}
           </div>
-        ) : hasPosts ? (
+        ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {posts.map((post) => (
+            {posts!.map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
@@ -174,31 +195,6 @@ export default function LinkedInPostsSection() {
                 authorImage={authorImage}
               />
             ))}
-          </div>
-        ) : (
-          /* Polished Empty State Card */
-          <div className="max-w-2xl mx-auto glass-light rounded-2xl p-8 border border-sky-500/30 text-center shadow-glass relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 flex items-center justify-center mx-auto mb-4 shadow-inner">
-              <FaLinkedin size={32} />
-            </div>
-
-            <h3 className="font-display font-bold text-xl text-[var(--text-primary)] mb-2">
-              Connect with me on LinkedIn
-            </h3>
-            <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto mb-6 leading-relaxed">
-              Follow my latest professional updates, technical posts, software development insights, and career achievements.
-            </p>
-
-            <a
-              href={linkedInUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 btn-primary bg-sky-600 hover:bg-sky-500 text-white font-semibold text-sm px-6 py-2.5 rounded-xl border border-sky-400/30 shadow-lg shadow-sky-500/20 transition-all hover:scale-102"
-            >
-              <FaLinkedin size={18} />
-              <span>View LinkedIn Profile</span>
-              <FiExternalLink size={14} />
-            </a>
           </div>
         )}
       </div>

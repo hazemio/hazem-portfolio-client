@@ -121,11 +121,16 @@ export interface Message {
 
 export interface LinkedInPost {
   id: string;
-  linkedinId: string;
+  source?: string;
+  linkedinId?: string;
   authorId?: string;
+  title?: string;
+  content?: string;
   text: string;
   postUrl?: string;
+  linkedinUrl?: string;
   imageUrl?: string;
+  imageId?: string;
   videoUrl?: string;
   publishedAt?: string;
   reactions: number;
@@ -133,6 +138,7 @@ export interface LinkedInPost {
   reposts: number;
   isVisible: boolean;
   isFeatured: boolean;
+  order?: number;
   createdAt: string;
   updatedAt?: string;
 }
