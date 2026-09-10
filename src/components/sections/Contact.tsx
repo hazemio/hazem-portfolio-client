@@ -203,7 +203,7 @@ export default function ContactSection() {
             {/* Response Time Reassurance */}
             <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] px-1">
               <FiClock size={14} className="text-brand-500 shrink-0" />
-              <span>Prompt response guaranteed within 24 hours.</span>
+              <span>We respond within 24 hours.</span>
             </div>
           </div>
 
