@@ -14,40 +14,7 @@ interface DisplayCredential {
   credentialUrl?: string;
 }
 
-const KEY_CREDENTIALS: DisplayCredential[] = [
-  {
-    id: 'depi-vapt',
-    title: 'Vulnerability Assessment & Penetration Testing (VAPT)',
-    issuer: 'DEPI - Digital Egypt Pioneers Initiative',
-    date: '2024',
-    category: 'VAPT & Defensive Security',
-    credentialUrl: 'https://depi.gov.eg/',
-  },
-  {
-    id: 'iti-cybersecurity',
-    title: 'Cybersecurity Specialist Intensive Program',
-    issuer: 'Information Technology Institute (ITI)',
-    date: '2024',
-    category: 'Offensive & Defensive Security',
-    credentialUrl: 'https://iti.gov.eg/',
-  },
-  {
-    id: 'huawei-hccda',
-    title: 'HCCDA - Huawei Cloud Certified Developer Associate',
-    issuer: 'Huawei Technologies',
-    date: '2024',
-    category: 'Cloud & System Architecture',
-    credentialUrl: 'https://e.huawei.com/',
-  },
-  {
-    id: 'cisco-netacad',
-    title: 'CCNA: Introduction to Networks & Cybersecurity Essentials',
-    issuer: 'Cisco Networking Academy',
-    date: '2023 - 2024',
-    category: 'Networking & Infrastructure',
-    credentialUrl: 'https://www.netacad.com/',
-  },
-];
+const KEY_CREDENTIALS: DisplayCredential[] = [];
 
 export default function CertificatesSection() {
   const sectionRef = useScrollReveal();
