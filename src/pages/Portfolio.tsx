@@ -1,6 +1,7 @@
 import HeroSection from '../components/sections/Hero';
 import AboutSection from '../components/sections/About';
 import SkillsSection from '../components/sections/Skills';
+import ServicesSection from '../components/sections/Services';
 import ProjectsSection from '../components/sections/Projects';
 import FootballHeroesSection from '../components/sections/FootballHeroesSection';
 import CertificatesSection from '../components/sections/Certificates';
@@ -17,6 +18,7 @@ export default function PortfolioPage() {
       <HeroSection />
       <AboutSection />
       <SkillsSection />
+      <ServicesSection />
       <ProjectsSection />
       <LinkedInPostsSection />
       <CertificatesSection />

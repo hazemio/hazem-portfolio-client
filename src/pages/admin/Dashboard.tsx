@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { FaLinkedin } from 'react-icons/fa';
-import { FiCode, FiAward, FiMessageSquare, FiLink, FiStar, FiBriefcase, FiBookOpen, FiArrowRight } from 'react-icons/fi';
+import { FiCode, FiAward, FiMessageSquare, FiLink, FiStar, FiBriefcase, FiBookOpen, FiArrowRight, FiLayers } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../hooks';
-import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi, educationApi, linkedinApi } from '../../api';
+import { projectsApi, certificatesApi, messagesApi, socialLinksApi, skillsApi, experienceApi, educationApi, linkedinApi, servicesApi } from '../../api';
 
 const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
 
@@ -41,15 +41,17 @@ export default function AdminDashboard() {
   const { data: experiences,  loading: l6 } = useApi(() => experienceApi.getAll());
   const { data: education,    loading: l7 } = useApi(() => educationApi.getAll());
   const { data: linkedinPosts,loading: l8 } = useApi(() => linkedinApi.getAdminPosts());
+  const { data: services,     loading: l9 } = useApi(() => servicesApi.getAdminAll());
 
   const unread = (messages as any[])?.filter((m) => !m.read).length || 0;
 
   const stats = [
     { label: 'Projects',     value: (projects as any[])?.length,    icon: FiCode,          to: `${ADMIN_BASE}/projects`,      color: 'bg-brand-500',         loading: l1 },
+    { label: 'Services',     value: (services as any[])?.length,    icon: FiLayers,        to: `${ADMIN_BASE}/services`,      color: 'bg-teal-500',          loading: l9 },
+    { label: 'Skills',       value: (skills as any[])?.length,      icon: FiStar,          to: `${ADMIN_BASE}/skills`,        color: 'bg-accent-amber',      loading: l5 },
     { label: 'Certificates', value: (certs as any[])?.length,       icon: FiAward,         to: `${ADMIN_BASE}/certificates`,  color: 'bg-accent-violet',     loading: l2 },
     { label: 'Messages',     value: `${unread} new`,                icon: FiMessageSquare, to: `${ADMIN_BASE}/messages`,      color: 'bg-accent-rose',       loading: l3 },
     { label: 'Social Links', value: (socials as any[])?.length,     icon: FiLink,          to: `${ADMIN_BASE}/social-links`,  color: 'bg-accent-cyan',       loading: l4 },
-    { label: 'Skills',       value: (skills as any[])?.length,      icon: FiStar,          to: `${ADMIN_BASE}/skills`,        color: 'bg-accent-amber',      loading: l5 },
     { label: 'Experience',   value: (experiences as any[])?.length, icon: FiBriefcase,     to: `${ADMIN_BASE}/experience`,    color: 'bg-accent-emerald',    loading: l6 },
     { label: 'Education',    value: (education as any[])?.length,   icon: FiBookOpen,      to: `${ADMIN_BASE}/education`,     color: 'bg-indigo-500',        loading: l7 },
     { label: 'LinkedIn',     value: (linkedinPosts as any[])?.length,icon: FaLinkedin,    to: `${ADMIN_BASE}/linkedin`,      color: 'bg-sky-600',           loading: l8 },

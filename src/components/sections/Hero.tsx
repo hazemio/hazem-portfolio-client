@@ -139,15 +139,15 @@ export default function HeroSection() {
           <div>
             <span
               ref={taglineRef}
-              className="font-mono text-sm text-brand-500 dark:text-brand-400 mb-4 flex items-center gap-2"
+              className="font-mono text-xs sm:text-sm font-semibold text-brand-500 dark:text-brand-400 mb-4 flex items-center gap-2 tracking-wide uppercase"
             >
               <span className="w-8 h-px bg-brand-500" />
-              Access Granted: Welcome to My Digital System
+              Full-Stack Engineering &times; Web Security
             </span>
 
             <h1
               ref={headingRef}
-              className="font-display font-bold text-5xl sm:text-6xl xl:text-7xl leading-[1.05] mb-6 overflow-hidden"
+              className="font-display font-bold text-5xl sm:text-6xl xl:text-7xl leading-[1.05] mb-5 overflow-hidden"
             >
               {profile?.name
                 ? splitText(profile.name)
@@ -156,18 +156,20 @@ export default function HeroSection() {
 
             <p
               ref={roleRef}
-              className="text-xl sm:text-2xl font-medium mb-5 gradient-text font-display"
+              className="text-xl sm:text-2xl font-semibold mb-5 gradient-text font-display"
             >
               {loading ? (
                 <span className="skeleton inline-block w-64 h-7 rounded" />
               ) : (
-                profile?.role || 'Full Stack Developer'
+                profile?.role && profile.role !== 'Full Stack Developer'
+                  ? profile.role
+                  : 'Full-Stack Developer & Cybersecurity Engineer'
               )}
             </p>
 
             <p
               ref={bioRef}
-              className="text-[var(--text-secondary)] text-base sm:text-lg leading-relaxed max-w-lg mb-10"
+              className="text-[var(--text-secondary)] text-base sm:text-lg leading-relaxed max-w-xl mb-9 font-normal"
             >
               {loading ? (
                 <>
@@ -175,18 +177,27 @@ export default function HeroSection() {
                   <span className="skeleton inline-block w-5/6 h-4 rounded" />
                 </>
               ) : (
-                profile?.bio || 'Crafting beautiful, performant web experiences with modern technologies. Passionate about clean code and stunning UI.'
+                profile?.bio && profile.bio !== 'Crafting beautiful, performant web experiences with modern technologies. Passionate about clean code and stunning UI.'
+                  ? profile.bio
+                  : 'Building secure, scalable, and modern web applications by combining Full-Stack Development with Cybersecurity best practices to deliver reliable, high-performance digital solutions.'
               )}
             </p>
 
-            <div ref={buttonsRef} className="flex flex-wrap items-center gap-4">
+            <div ref={buttonsRef} className="flex flex-wrap items-center gap-3.5">
               <button
                 ref={primaryBtnRef}
                 onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-primary magnetic-btn"
+                className="btn-primary magnetic-btn shadow-lg shadow-brand-500/25"
               >
                 <FiMail size={16} />
                 <span>Get In Touch</span>
+              </button>
+
+              <button
+                onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-outline border-[var(--border)] hover:border-brand-500/50 hover:bg-brand-500/10 text-[var(--text-primary)]"
+              >
+                <span>View Projects</span>
               </button>
 
               {profile?.cvUrl && (
@@ -194,19 +205,12 @@ export default function HeroSection() {
                   href={profile.cvUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-outline"
+                  className="btn-ghost flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 >
-                  <FiDownload size={16} />
-                  Download CV
+                  <FiDownload size={15} />
+                  <span>Resume</span>
                 </a>
               )}
-
-              <button
-                onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-ghost"
-              >
-                View Projects
-              </button>
             </div>
 
             {/* Editable Stats row */}

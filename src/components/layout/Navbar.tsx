@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: 'Home',         href: '#hero' },
   { label: 'About',        href: '#about' },
   { label: 'Skills',       href: '#skills' },
+  { label: 'Services',     href: '#services' },
   { label: 'Projects',     href: '#projects' },
   { label: 'Certificates', href: '#certificates' },
   { label: 'Experience',   href: '#experience' },

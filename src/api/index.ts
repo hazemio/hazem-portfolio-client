@@ -154,11 +154,24 @@ export const messagesApi = {
 
 // ─── Skills ────────────────────────────────────────────────────────────────────
 export const skillsApi = {
-  getAll: () => api.get('/skills'),
+  getAll: (all?: boolean) => api.get(`/skills${all ? '?all=true' : ''}`),
+  getAdminAll: () => api.get('/skills/admin/all'),
+  getOne: (id: string) => api.get(`/skills/${id}`),
   create: (data: Record<string, unknown>) => api.post('/skills', data),
   update: (id: string, data: Record<string, unknown>) =>
     api.patch(`/skills/${id}`, data),
   delete: (id: string) => api.delete(`/skills/${id}`),
+};
+
+// ─── Services ──────────────────────────────────────────────────────────────────
+export const servicesApi = {
+  getAll: (all?: boolean) => api.get(`/services${all ? '?all=true' : ''}`),
+  getAdminAll: () => api.get('/services/admin/all'),
+  getOne: (id: string) => api.get(`/services/${id}`),
+  create: (data: Record<string, unknown>) => api.post('/services', data),
+  update: (id: string, data: Record<string, unknown>) =>
+    api.patch(`/services/${id}`, data),
+  delete: (id: string) => api.delete(`/services/${id}`),
 };
 
 // ─── Experience ────────────────────────────────────────────────────────────────

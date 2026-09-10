@@ -5,7 +5,7 @@ import { FaLinkedin } from 'react-icons/fa';
 import {
   FiGrid, FiUser, FiCode, FiAward, FiLink, FiMessageSquare,
   FiBriefcase, FiBookOpen, FiStar, FiLogOut, FiSun, FiMoon, FiMenu, FiX,
-  FiExternalLink,
+  FiExternalLink, FiLayers,
 } from 'react-icons/fi';
 import { useAuthStore, useThemeStore } from '../../store';
 import { useApi } from '../../hooks';
@@ -16,10 +16,11 @@ const ADMIN_BASE = '/tech/mode1/dash/hg/admin';
 const NAV = [
   { to: ADMIN_BASE,                  label: 'Dashboard',    icon: FiGrid },
   { to: `${ADMIN_BASE}/profile`,      label: 'Profile',      icon: FiUser },
+  { to: `${ADMIN_BASE}/skills`,       label: 'Skills',       icon: FiStar },
+  { to: `${ADMIN_BASE}/services`,     label: 'Services',     icon: FiLayers },
   { to: `${ADMIN_BASE}/projects`,     label: 'Projects',     icon: FiCode },
   { to: `${ADMIN_BASE}/certificates`, label: 'Certificates', icon: FiAward },
   { to: `${ADMIN_BASE}/social-links`, label: 'Social Links', icon: FiLink },
-  { to: `${ADMIN_BASE}/skills`,       label: 'Skills',       icon: FiStar },
   { to: `${ADMIN_BASE}/experience`,   label: 'Experience',   icon: FiBriefcase },
   { to: `${ADMIN_BASE}/education`,    label: 'Education',    icon: FiBookOpen },
   { to: `${ADMIN_BASE}/linkedin`,     label: 'LinkedIn',     icon: FaLinkedin },

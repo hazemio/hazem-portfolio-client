@@ -10,7 +10,7 @@ import PortfolioPage from './pages/Portfolio';
 import AdminLogin from './pages/admin/Login';
 import AdminLayout from './pages/admin/Layout';
 import ProtectedRoute from './components/admin/ProtectedRoute';
-import { AdminSocialLinks, AdminSkills, AdminExperience, AdminEducation } from './pages/admin/AdminEntities';
+import { AdminSocialLinks, AdminSkills, AdminServices, AdminExperience, AdminEducation } from './pages/admin/AdminEntities';
 
 const ProjectDetailsPage = lazy(() => import('./pages/ProjectDetails'));
 const PrivacyPage = lazy(() => import('./pages/Privacy'));
@@ -135,6 +135,14 @@ export default function App() {
             element={
               <Suspense fallback={<Spin />}>
                 <AdminSkills />
+              </Suspense>
+            }
+          />
+          <Route
+            path="services"
+            element={
+              <Suspense fallback={<Spin />}>
+                <AdminServices />
               </Suspense>
             }
           />

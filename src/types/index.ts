@@ -69,13 +69,27 @@ export interface SocialLink {
 }
 
 export interface Skill {
-  icon: any;
+  icon?: any;
   id: string;
   name: string;
-  level: number;
+  level?: number;
   category: string;
   iconName?: string;
   order: number;
+  isActive?: boolean;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string;
+  badge?: string;
+  features?: string[];
+  order: number;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Experience {
