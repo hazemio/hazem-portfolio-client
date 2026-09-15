@@ -120,7 +120,7 @@ const SERVICE_FIELDS = [
 ];
 
 export function AdminServices() {
-  const { data, loading, refetch } = useApi<Service[]>(() => servicesApi.getAll(true));
+  const { data, loading, refetch } = useApi<Service[]>(() => servicesApi.getAdminAll());
 
   const formatPayload = (d: any) => {
     let features: string[] = [];
@@ -129,6 +129,7 @@ export function AdminServices() {
     } else if (Array.isArray(d.features)) {
       features = d.features;
     }
+    const status = d.status || 'ACTIVE';
     return {
       title: d.title,
       description: d.description,
@@ -136,7 +137,8 @@ export function AdminServices() {
       icon: d.icon || null,
       features,
       order: d.order !== undefined ? Number(d.order) : 0,
-      status: d.status || 'ACTIVE',
+      status,
+      isVisible: status === 'ACTIVE',
     };
   };
 
@@ -144,7 +146,10 @@ export function AdminServices() {
     e.stopPropagation();
     try {
       const nextStatus = s.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-      await servicesApi.update(s.id, { status: nextStatus });
+      await servicesApi.update(s.id, {
+        status: nextStatus,
+        isVisible: nextStatus === 'ACTIVE',
+      });
       toast.success(`Service "${s.title}" is now ${nextStatus}`);
       refetch();
     } catch {

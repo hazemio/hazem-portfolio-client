@@ -30,6 +30,16 @@ export interface Profile {
   ramadanBannerText?: string;
 }
 
+export interface ProjectImage {
+  id: string;
+  projectId: string;
+  imageUrl: string;
+  imageId?: string;
+  alt?: string;
+  order: number;
+  createdAt?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -37,6 +47,7 @@ export interface Project {
   detailedContent?: string;
   imageUrl?: string;
   imageId?: string;
+  images?: ProjectImage[];
   youtubeUrl?: string;
   githubUrl?: string;
   demoUrl?: string;
@@ -88,6 +99,7 @@ export interface Service {
   features?: string[];
   order: number;
   status: 'ACTIVE' | 'INACTIVE';
+  isVisible?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

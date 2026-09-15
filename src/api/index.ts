@@ -111,6 +111,30 @@ export const projectsApi = {
       { headers: { 'Content-Type': 'multipart/form-data' } },
     );
   },
+
+  // Gallery methods
+  getGalleryImages: (projectId: string) =>
+    api.get(`/projects/${projectId}/images`),
+
+  uploadGalleryImages: (projectId: string, files: File[]) => {
+    const fd = new FormData();
+    files.forEach((f) => fd.append('images', f));
+    return api.post(`/projects/${projectId}/images/upload`, fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  addGalleryImage: (projectId: string, data: { imageUrl: string; imageId?: string; alt?: string; order?: number }) =>
+    api.post(`/projects/${projectId}/images`, data),
+
+  updateGalleryImage: (projectId: string, imageId: string, data: { alt?: string; order?: number }) =>
+    api.patch(`/projects/${projectId}/images/${imageId}`, data),
+
+  reorderGalleryImages: (projectId: string, imageIds: string[]) =>
+    api.patch(`/projects/${projectId}/images/reorder`, { imageIds }),
+
+  deleteGalleryImage: (projectId: string, imageId: string) =>
+    api.delete(`/projects/${projectId}/images/${imageId}`),
 };
 
 // ─── Certificates ──────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiExternalLink, FiGithub, FiStar, FiArrowRight } from 'react-icons/fi';
+import { FiExternalLink, FiGithub, FiStar, FiArrowRight, FiImage } from 'react-icons/fi';
 import { useScrollReveal, useApi } from '../../hooks';
 import { projectsApi } from '../../api';
 import { Project } from '../../types';
@@ -30,6 +30,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [hovered, setHovered] = useState(false);
   const roleBadge = getProjectRole(project);
   const liveLink = project.demoUrl || project.liveUrl;
+  const displayImg = project.imageUrl || (project.images && project.images[0]?.imageUrl);
 
   return (
     <motion.div
@@ -47,9 +48,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           to={`/projects/${project.id}`}
           className="block relative h-48 sm:h-52 overflow-hidden bg-[var(--bg-overlay)] shrink-0"
         >
-          {project.imageUrl ? (
+          {displayImg ? (
             <motion.img
-              src={project.imageUrl}
+              src={displayImg}
               alt={project.title}
               className="w-full h-full object-cover"
               animate={{ scale: hovered ? 1.05 : 1 }}
@@ -66,14 +67,20 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
           {/* Badges Overlay */}
           <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none z-10">
-            {project.featured ? (
-              <div className="flex items-center gap-1.5 bg-brand-500/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-md shadow-xs">
-                <FiStar size={11} />
-                <span>Featured</span>
-              </div>
-            ) : (
-              <div />
-            )}
+            <div className="flex items-center gap-1.5">
+              {project.featured && (
+                <div className="flex items-center gap-1.5 bg-brand-500/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-md shadow-xs">
+                  <FiStar size={11} />
+                  <span>Featured</span>
+                </div>
+              )}
+              {project.images && project.images.length > 1 && (
+                <div className="flex items-center gap-1 bg-black/60 text-white text-[10px] font-mono px-2 py-1 rounded-full backdrop-blur-md border border-white/10">
+                  <FiImage size={10} />
+                  <span>{project.images.length}</span>
+                </div>
+              )}
+            </div>
 
             <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider bg-black/65 backdrop-blur-md text-brand-300 border border-brand-500/30">
               {roleBadge}

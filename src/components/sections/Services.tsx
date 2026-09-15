@@ -2,34 +2,14 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   FiLayers,
-  FiServer,
-  FiDatabase,
-  FiLock,
-  FiSearch,
-  FiShield,
-  FiCloud,
-  FiCompass,
   FiArrowRight,
   FiCheck,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import { useScrollReveal, useApi } from '../../hooks';
 import { servicesApi } from '../../api';
 import { Service } from '../../types';
 import { DynamicIcon } from '../../utils/icons';
-
-interface ServiceItem {
-  id: string;
-  number: string;
-  title: string;
-  badge: string;
-  description: string;
-  iconName?: string;
-  icon?: React.ComponentType<{ size?: number; className?: string }>;
-  accentColor: string;
-  glowBg: string;
-  borderColor: string;
-  features: string[];
-}
 
 const SERVICE_STYLES = [
   { accentColor: 'text-sky-400', glowBg: 'bg-sky-500/10', borderColor: 'hover:border-sky-500/40' },
@@ -42,125 +22,15 @@ const SERVICE_STYLES = [
   { accentColor: 'text-purple-400', glowBg: 'bg-purple-500/10', borderColor: 'hover:border-purple-500/40' },
 ];
 
-const DEFAULT_SERVICES: ServiceItem[] = [
-  {
-    id: 'full-stack',
-    number: '01',
-    title: 'Full-Stack Web Development',
-    badge: 'Core Focus',
-    description:
-      'End-to-end web applications designed with modern React/Next.js frontends and robust Node.js backends for optimal speed and UX.',
-    icon: FiLayers,
-    iconName: 'FiLayers',
-    accentColor: 'text-sky-400',
-    glowBg: 'bg-sky-500/10',
-    borderColor: 'hover:border-sky-500/40',
-    features: ['Modern React & Next.js', 'Responsive Tailwind UI', 'Component Architecture'],
-  },
-  {
-    id: 'backend-api',
-    number: '02',
-    title: 'Backend API Development',
-    badge: 'High Performance',
-    description:
-      'Modular RESTful services engineered with Express.js and NestJS, adhering to clean architecture, data validation, and resilience.',
-    icon: FiServer,
-    accentColor: 'text-indigo-400',
-    glowBg: 'bg-indigo-500/10',
-    borderColor: 'hover:border-indigo-500/40',
-    features: ['RESTful API Design', 'Express.js & NestJS', 'Input Validation & Error Handling'],
-  },
-  {
-    id: 'database-design',
-    number: '03',
-    title: 'Database Design & Optimization',
-    badge: 'Reliability',
-    description:
-      'Data modeling, migration schemas, and query optimization using PostgreSQL, MongoDB, and Prisma ORM for seamless scaling.',
-    icon: FiDatabase,
-    accentColor: 'text-emerald-400',
-    glowBg: 'bg-emerald-500/10',
-    borderColor: 'hover:border-emerald-500/40',
-    features: ['Relational & NoSQL Models', 'Prisma ORM Integrations', 'Query Performance Tuning'],
-  },
-  {
-    id: 'auth-security',
-    number: '04',
-    title: 'Authentication & Security Architecture',
-    badge: 'Defense-in-Depth',
-    description:
-      'Implementation of hardened identity workflows with JWT, OAuth, session management, and granular Role-Based Access Control (RBAC).',
-    icon: FiLock,
-    accentColor: 'text-amber-400',
-    glowBg: 'bg-amber-500/10',
-    borderColor: 'hover:border-amber-500/40',
-    features: ['JWT & Refresh Token Flow', 'Role-Based Access (RBAC)', 'Password & Secret Hashing'],
-  },
-  {
-    id: 'security-assessment',
-    number: '05',
-    title: 'Website Security Assessment',
-    badge: 'Vulnerability Audit',
-    description:
-      'In-depth review of web application endpoints, headers, and codebases to identify misconfigurations and eliminate attack surfaces.',
-    icon: FiSearch,
-    accentColor: 'text-rose-400',
-    glowBg: 'bg-rose-500/10',
-    borderColor: 'hover:border-rose-500/40',
-    features: ['OWASP Top 10 Mitigation', 'Security Header Analysis', 'Access Control Validation'],
-  },
-  {
-    id: 'penetration-testing',
-    number: '06',
-    title: 'Penetration Testing (VAPT)',
-    badge: 'Offensive Security',
-    description:
-      'Structured Vulnerability Assessment and Penetration Testing simulating real-world adversary tactics to uncover system flaws.',
-    icon: FiShield,
-    accentColor: 'text-red-400',
-    glowBg: 'bg-red-500/10',
-    borderColor: 'hover:border-red-500/40',
-    features: ['Burp Suite & Nmap Audits', 'Simulated Threat Vectors', 'Remediation Roadmaps'],
-  },
-  {
-    id: 'devops-deployment',
-    number: '07',
-    title: 'Deployment & DevOps CI/CD',
-    badge: 'Production Ready',
-    description:
-      'Setting up automated build pipelines, containerized Docker microservices, and reliable deployments across Vercel, Render, and VPS.',
-    icon: FiCloud,
-    accentColor: 'text-cyan-400',
-    glowBg: 'bg-cyan-500/10',
-    borderColor: 'hover:border-cyan-500/40',
-    features: ['Docker Containerization', 'CI/CD Automation', 'Cloud Hosting Configuration'],
-  },
-  {
-    id: 'tech-consulting',
-    number: '08',
-    title: 'Technical Architecture Consulting',
-    badge: 'Strategic Advisory',
-    description:
-      'Expert guidance on software stacks, scalable system blueprints, code refactoring, and security best practices for emerging platforms.',
-    icon: FiCompass,
-    accentColor: 'text-purple-400',
-    glowBg: 'bg-purple-500/10',
-    borderColor: 'hover:border-purple-500/40',
-    features: ['Stack Selection & Feasibility', 'Code Quality & Maintainability', 'Security Integration Guidance'],
-  },
-];
-
 export default function ServicesSection() {
   const sectionRef = useScrollReveal({ stagger: 0.08 });
-  const { data: dbServices } = useApi<Service[]>(() => servicesApi.getAll());
+  const { data: dbServices, loading, error } = useApi<Service[]>(() => servicesApi.getAll());
 
   const services = useMemo(() => {
-    if (!dbServices || dbServices.length === 0) {
-      return DEFAULT_SERVICES;
-    }
+    if (!dbServices || !Array.isArray(dbServices)) return [];
 
     return dbServices
-      .filter((s) => s.status === 'ACTIVE')
+      .filter((s) => s.status === 'ACTIVE' && s.isVisible !== false)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .map((s, idx) => {
         const style = SERVICE_STYLES[idx % SERVICE_STYLES.length];
@@ -204,12 +74,63 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, idx) => {
-            const IconComponent = service.icon;
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="glass-light rounded-2xl p-6 border border-[var(--border)] flex flex-col justify-between h-72 animate-pulse"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-white/5" />
+                    <div className="w-6 h-3 bg-white/5 rounded" />
+                  </div>
+                  <div className="w-16 h-4 bg-white/5 rounded mb-3" />
+                  <div className="w-3/4 h-5 bg-white/5 rounded mb-3" />
+                  <div className="w-full h-3 bg-white/5 rounded mb-1.5" />
+                  <div className="w-5/6 h-3 bg-white/5 rounded" />
+                </div>
+                <div className="pt-4 border-t border-[var(--border)]/60 space-y-2">
+                  <div className="w-2/3 h-3 bg-white/5 rounded" />
+                  <div className="w-1/2 h-3 bg-white/5 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-            return (
+        {/* Error State */}
+        {!loading && error && (
+          <div className="glass-light rounded-2xl p-8 border border-[var(--border)] text-center max-w-md mx-auto my-8">
+            <FiAlertCircle size={36} className="text-accent-rose mx-auto mb-3" />
+            <h3 className="font-display font-semibold text-lg text-[var(--text-primary)] mb-1">
+              Unable to Load Services
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+              Please check your internet connection or try refreshing the page.
+            </p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && services.length === 0 && (
+          <div className="glass-light rounded-2xl p-12 border border-[var(--border)] text-center max-w-lg mx-auto my-8">
+            <FiLayers size={40} className="text-brand-500/40 mx-auto mb-4" />
+            <h3 className="font-display font-semibold text-xl text-[var(--text-primary)] mb-2">
+              No Services Published Yet
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Services will appear here once published from the admin dashboard.
+            </p>
+          </div>
+        )}
+
+        {/* Services Grid */}
+        {!loading && !error && services.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.map((service, idx) => (
               <motion.div
                 key={service.id}
                 data-reveal
@@ -225,13 +146,7 @@ export default function ServicesSection() {
                     <div
                       className={`w-12 h-12 rounded-xl ${service.glowBg} flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform duration-300`}
                     >
-                      {service.iconName ? (
-                        <DynamicIcon name={service.iconName} size={22} className={service.accentColor} />
-                      ) : IconComponent ? (
-                        <IconComponent size={22} className={service.accentColor} />
-                      ) : (
-                        <FiLayers size={22} className={service.accentColor} />
-                      )}
+                      <DynamicIcon name={service.iconName} size={22} className={service.accentColor} />
                     </div>
                     <span className="font-mono text-xs font-semibold text-[var(--text-muted)] tracking-wider">
                       {service.number}
@@ -255,20 +170,22 @@ export default function ServicesSection() {
                 </div>
 
                 {/* Features list */}
-                <div className="pt-4 border-t border-[var(--border)]/60">
-                  <ul className="space-y-2">
-                    {service.features.map((feat) => (
-                      <li key={feat} className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                        <FiCheck className="text-brand-500 shrink-0" size={13} />
-                        <span className="truncate">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {service.features.length > 0 && (
+                  <div className="pt-4 border-t border-[var(--border)]/60">
+                    <ul className="space-y-2">
+                      {service.features.map((feat) => (
+                        <li key={feat} className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                          <FiCheck className="text-brand-500 shrink-0" size={13} />
+                          <span className="truncate">{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </motion.div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Bottom Banner */}
         <div data-reveal className="mt-14 glass-light rounded-2xl p-6 sm:p-8 border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
@@ -292,3 +209,4 @@ export default function ServicesSection() {
     </section>
   );
 }
+
