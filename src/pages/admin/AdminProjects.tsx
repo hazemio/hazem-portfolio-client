@@ -18,7 +18,7 @@ import {
   FiSearch,
   FiLayers,
 } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useApi } from '../../hooks';
 import { projectsApi } from '../../api';
 import { Project, ProjectImage } from '../../types';
@@ -149,6 +149,7 @@ export default function AdminProjects() {
     if (!file) return;
     setCoverFile(file);
     setCoverPreview(URL.createObjectURL(file));
+    e.target.value = '';
   };
 
   // Handle Project Form Submission (Create or Update)
@@ -182,9 +183,13 @@ export default function AdminProjects() {
 
       // If a cover file was selected, upload it
       if (coverFile && savedProjectId) {
-        toast.loading('Uploading main cover image...', { id: 'cover-upload' });
-        await projectsApi.uploadImage(savedProjectId, coverFile);
-        toast.success('Cover image uploaded', { id: 'cover-upload' });
+        const coverToastId = toast.loading('Uploading main cover image...');
+        try {
+          await projectsApi.uploadImage(savedProjectId, coverFile);
+          toast.success('Cover image uploaded', { id: coverToastId });
+        } catch (imgErr: any) {
+          toast.error(imgErr?.response?.data?.message || 'Failed to upload cover image', { id: coverToastId });
+        }
       }
 
       setProjectModalOpen(false);
@@ -216,16 +221,16 @@ export default function AdminProjects() {
     if (!files || files.length === 0) return;
     const fileArray = Array.from(files);
     setUploadingGallery(true);
-    toast.loading(`Uploading ${fileArray.length} gallery image(s)...`, { id: 'gallery-upload' });
+    const toastId = toast.loading(`Uploading ${fileArray.length} gallery image(s)...`);
 
     try {
       const res = await projectsApi.uploadGalleryImages(projectId, fileArray);
-      toast.success('Gallery images uploaded successfully', { id: 'gallery-upload' });
-      const updatedImages = [...projectGalleryImages, ...res.data];
-      setProjectGalleryImages(updatedImages);
+      toast.success('Gallery images uploaded successfully', { id: toastId });
+      const newImages = Array.isArray(res?.data) ? res.data : [];
+      setProjectGalleryImages((prev) => [...prev, ...newImages]);
       refetch();
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Failed to upload gallery images', { id: 'gallery-upload' });
+      toast.error(err?.response?.data?.message || 'Failed to upload gallery images', { id: toastId });
     } finally {
       setUploadingGallery(false);
     }
@@ -779,7 +784,10 @@ export default function AdminProjects() {
                           multiple
                           accept="image/*"
                           className="hidden"
-                          onChange={(e) => handleUploadGalleryImages(editingProject.id, e.target.files)}
+                          onChange={(e) => {
+                            handleUploadGalleryImages(editingProject.id, e.target.files);
+                            e.target.value = '';
+                          }}
                         />
                       </div>
 
@@ -938,7 +946,10 @@ export default function AdminProjects() {
                     multiple
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => handleUploadGalleryImages(galleryProject.id, e.target.files)}
+                    onChange={(e) => {
+                      handleUploadGalleryImages(galleryProject.id, e.target.files);
+                      e.target.value = '';
+                    }}
                   />
                 </div>
 

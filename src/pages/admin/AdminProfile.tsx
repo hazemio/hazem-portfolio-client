@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FiUpload, FiSave, FiUser, FiVideo, FiTrash2, FiPlay, FiLink, FiMoon, FiClock } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { profileApi } from '../../api';
 import { useApi } from '../../hooks';
 import { Profile } from '../../types';

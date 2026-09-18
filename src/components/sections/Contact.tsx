@@ -14,7 +14,7 @@ import {
   FiExternalLink,
 } from 'react-icons/fi';
 import { FaLinkedin, FaWhatsapp } from 'react-icons/fa';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useScrollReveal, useApi } from '../../hooks';
 import { messagesApi, profileApi } from '../../api';
 import { Profile } from '../../types';

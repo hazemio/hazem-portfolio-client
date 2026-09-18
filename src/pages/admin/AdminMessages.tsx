@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiTrash2, FiMail, FiX, FiEye } from 'react-icons/fi';
 import { FiInbox } from "react-icons/fi";
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useApi } from '../../hooks';
 import { messagesApi } from '../../api';
 import { Message } from '../../types';

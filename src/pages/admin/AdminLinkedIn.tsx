@@ -19,7 +19,7 @@ import {
   FiCheck,
   FiImage,
 } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useApi } from '../../hooks';
 import { linkedinApi } from '../../api';
 import { LinkedInPost, LinkedInStatus } from '../../types';

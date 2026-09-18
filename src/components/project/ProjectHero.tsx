@@ -10,7 +10,7 @@ import {
   FiCheck,
 } from 'react-icons/fi';
 import { Project } from '../../types';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 interface ProjectHeroProps {
   project: Project;

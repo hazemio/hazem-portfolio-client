@@ -1,4 +1,4 @@
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useApi } from '../../hooks';
 import { socialLinksApi, skillsApi, servicesApi, experienceApi, educationApi } from '../../api';
 import { SocialLink, Skill, Service, Experience, Education } from '../../types';
